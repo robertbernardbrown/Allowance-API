@@ -1,0 +1,19 @@
+{
+  "name": "allowance-api",
+  "version": "1.0.0",
+  "description": "API for the Allowance application",
+  "main": "index.js",
+  "repository": "https://github.com/robertbernardbrown/Allowance-API.git",
+  "author": "Bob",
+  "license": "MIT",
+  "scripts": {
+    "test": "nothing",
+    "start": "nodemon server.js"
+  },
+  "private": false,
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.3"
+  }
+}
