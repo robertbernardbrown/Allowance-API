@@ -3,12 +3,16 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 
-const productRoutes = require("./api/routes/products");
+// = Route files ===============
+const budgetRoutes = require("./api/routes/budgets");
+const transactionRoutes = require("./api/routes/transactions");
 
+// = Middleware ================
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
+//= CORS =======================
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -19,8 +23,11 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("/products", productRoutes);
+app.use("/budgets", budgetRoutes);
+app.use("/transactions", transactionRoutes);
+app.use("/users", transactionRoutes);
 
+// = Error messaging for missing resources or system error
 app.use((req, res, next) => {
     const error = new Error("Not found");
     error.status = 404;
