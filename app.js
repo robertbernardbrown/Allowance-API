@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 // = Route files ===============
 const budgetRoutes = require("./api/routes/budgets");
 const transactionRoutes = require("./api/routes/transactions");
+const userRoutes = require("./api/routes/users");
+const balanceRoutes = require("./api/routes/balances");
 
 // = Middleware ================
 app.use(morgan("dev"));
@@ -23,9 +25,11 @@ app.use((req, res, next) => {
     next();
 })
 
+// = Route Middleware ==========
 app.use("/budgets", budgetRoutes);
 app.use("/transactions", transactionRoutes);
-app.use("/users", transactionRoutes);
+app.use("/users", userRoutes);
+app.use("/balances", balanceRoutes);
 
 // = Error messaging for missing resources or system error
 app.use((req, res, next) => {
