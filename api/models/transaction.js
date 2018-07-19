@@ -8,7 +8,10 @@ module.exports = function(sequelize, DataTypes) {
       },
       transactionAmount: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+        }
       },
       transactionReceipt: {
         type: DataTypes.STRING,
@@ -16,7 +19,10 @@ module.exports = function(sequelize, DataTypes) {
       },
       transactionMonth: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+        }
       }
       
     });

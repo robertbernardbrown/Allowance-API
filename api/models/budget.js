@@ -5,11 +5,17 @@ module.exports = function(sequelize, DataTypes) {
       budget: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+        }
       },
       budgetMonth: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isNumeric: true,
+        }
       }
       
     });
