@@ -1,7 +1,6 @@
 const http = require("http");
 const app = require("./app");
 const db = require("./api/models");
-
 require('dotenv').config();
 
 const port = process.env.PORT || 3000;

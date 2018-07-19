@@ -1,18 +1,17 @@
 module.exports = function(sequelize, DataTypes) {
   
-    var Budget = sequelize.define("Budget", {
+    var Balance = sequelize.define("Balance", {
      
-      budget: {
+      balance: {
         type: DataTypes.INTEGER,
-        defaultValue: 0,
         allowNull: false
       },
-      budgetMonth: {
+      balanceMonth: {
         type: DataTypes.INTEGER,
         allowNull: false
       }
       
     });
     
-    return Budget;
+    return Balance;
 };
