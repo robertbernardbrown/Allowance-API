@@ -1,0 +1,22 @@
+{
+    "development": {
+      "username": "root",
+      "password": "root",
+      "database": "allowance",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3306
+    },
+    "test": {
+      "username": "bobbrown1118",
+      "password": "root",
+      "database": "allowance",
+      "host": "bob-aws-dbs.cnmimg7ys61t.us-east-1.rds.amazonaws.com",
+      "dialect": "mysql",
+      "port": 3306
+    },
+    "production": {
+      "use_env_variable": "JAWSDB_URL",
+      "dialect": "mysql"
+    }
+}
