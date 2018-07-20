@@ -1,8 +1,8 @@
 const express = require("express");
-const router = express.Router();
-const db = require("../models");
+const router  = express.Router();
+const db      = require("../models");
 
-
+//Login a valid user
 router.post("/", (req, res, next)=>{
     const loginInfo = {
         userName: req.body.userName,
