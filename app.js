@@ -26,10 +26,10 @@ app.use((req, res, next) => {
 })
 
 // = Route Middleware ==========
-app.use("/budgets", budgetRoutes);
-app.use("/transactions", transactionRoutes);
-app.use("/users", userRoutes);
-app.use("/balances", balanceRoutes);
+app.use("/api/budgets", budgetRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/balances", balanceRoutes);
 
 // = Error messaging for missing resources or system error
 app.use((req, res, next) => {

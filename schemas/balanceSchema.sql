@@ -5,8 +5,8 @@ USE allowance;
 
 CREATE TABLE budget (
   
-  budget INTEGER(100) NULL,
-  budgetMonth VARCHAR(100) NULL,
+  balace INTEGER(100) NULL,
+  balanceMonth INTEGER(100) NULL,
   userId VARCHAR(100) NULL
  
 );

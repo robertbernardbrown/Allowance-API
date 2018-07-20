@@ -21,6 +21,12 @@ router.put("/:userId", (req, res, next)=>{
     })
 });
 
+router.post("/:userId", (req, res, next)=>{
+    res.status(201).json({
+        message: "Posted new transaction!"
+    })
+});
+
 router.delete("/:userId", (req, res, next)=>{
     res.status(200).json({
         message: "Deleted transaction!"

@@ -15,6 +15,10 @@ module.exports = function(sequelize, DataTypes) {
         validate: {
             isNumeric: true,
         }
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
       
     });

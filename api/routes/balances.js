@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/:userId", (req, res, next)=>{
-    const id = req.params.productId;
+    const id = req.params.userId;
     if (id === "special") {
         res.status(200).json({
             message: "Secret code!",

@@ -15,6 +15,12 @@ router.get("/:userId", (req, res, next)=>{
     }
 });
 
+router.post("/:userId", (req, res, next)=>{
+    res.status(201).json({
+        message: "Posted new user!"
+    })
+});
+
 router.put("/:userId", (req, res, next)=>{
     res.status(200).json({
         message: "Updated user!"
