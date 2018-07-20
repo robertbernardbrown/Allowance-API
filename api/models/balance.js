@@ -1,23 +1,15 @@
 module.exports = function(sequelize, DataTypes) {
   
-    var Transaction = sequelize.define("Transaction", {
+    var Balance = sequelize.define("Balance", {
      
-      transactionType: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      transactionAmount: {
+      balance: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
             isNumeric: true,
         }
       },
-      transactionReceipt: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      transactionMonth: {
+      balanceMonth: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
@@ -27,5 +19,5 @@ module.exports = function(sequelize, DataTypes) {
       
     });
     
-    return Transaction;
+    return Balance;
 };

@@ -1,14 +1,13 @@
-DROP DATABASE IF EXISTS twinkle_db;
-CREATE database twinkle_db;
+DROP DATABASE IF EXISTS allowance;
+CREATE database allowance;
 
-USE twinkle_db;
+USE allowance;
 
-CREATE TABLE inventory (
+CREATE TABLE transactions (
   
-  item_name VARCHAR(100) NULL,
-  description VARCHAR(100) NULL,
-  item_number VARCHAR(100) NULL,
-  in_stock DECIMAL(10,4) NULL,
-  price DECIMAL(10,4) NULL
+  transactionType VARCHAR(100) NULL,
+  transactionAmount DECIMAL(100) NULL,
+  transactionReciept VARCHAR(100) NULL,
+  transactionMonth INTEGER(100) NULL
  
 );
