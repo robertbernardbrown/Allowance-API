@@ -34,9 +34,8 @@ router.put("/:userId/email", (req, res, next)=>{
     db.User
     .findOne({where: {userEmail:req.body.userEmail}})
     .then(result => {
-        console.log(result);
         if (result){
-            res.status(200).json({
+            res.status(409).json({
                 message: "This email exists already, please try another."
             })
         } else {
@@ -78,6 +77,10 @@ router.put("/:userId/password", (req, res, next)=>{
                     message: "Something went wrong!",
                     error: err
                 })
+            })
+        } else {
+            res.status(409).json({
+                message: "Your old passwords didn't match!",
             })
         }
     })

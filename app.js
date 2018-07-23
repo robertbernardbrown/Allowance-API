@@ -11,7 +11,6 @@ const balanceRoutes = require("./api/routes/balances");
 const loginRoutes = require("./api/routes/login");
 const registerRoutes = require("./api/routes/register");
 
-
 // = Middleware ================
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({extended:false}));
