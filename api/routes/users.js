@@ -43,7 +43,6 @@ router.put("/:userId/email", (req, res, next)=>{
             db.User
             .update(newEmail, {where: {id:req.params.userId}})
             .then(result=>{
-                console.log(result);
                 res.status(201).json({
                     message: "Email updated!",
                     result: result
@@ -69,7 +68,6 @@ router.put("/:userId/password", (req, res, next)=>{
             db.User
             .update({userPassword:req.body.userPassword}, {where: {id:req.params.userId}})
             .then(result=>{
-                console.log(result);
                 res.status(201).json({
                     message: "Password updated!",
                     result: result
@@ -97,7 +95,6 @@ router.put("/:userId/userName", (req, res, next)=>{
     db.User
     .update(newUsername, {where: {id:req.params.userId}})
     .then(result=>{
-        console.log(result);
         res.status(201).json({
             message: "Username updated!",
             result: result
