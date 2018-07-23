@@ -29,7 +29,6 @@ router.post("/:userId", (req, res, next)=>{
         res.status(201).json({message: "Posted new budget!", budget: result})
     })
     .catch(err => {
-        console.log(err)
         res.status(500).json({message: "Something went wrong posting that budget!", error: err})
     })
 });

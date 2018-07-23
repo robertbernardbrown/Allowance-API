@@ -26,6 +26,11 @@ module.exports = function(sequelize, DataTypes) {
       },
       userId: {
         type: DataTypes.INTEGER,
+        foreignKey: true,
+        references: {
+          model: "Users",
+          key: 'id',
+        },
         allowNull: false
       }
       
