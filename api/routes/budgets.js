@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-var db = require("../models");
+const db = require("../models");
 
 router.get("/:userId", (req, res, next)=>{
     const id = req.params.userId;

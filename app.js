@@ -8,6 +8,8 @@ const budgetRoutes = require("./api/routes/budgets");
 const transactionRoutes = require("./api/routes/transactions");
 const userRoutes = require("./api/routes/users");
 const balanceRoutes = require("./api/routes/balances");
+const loginRoutes = require("./api/routes/login");
+const registerRoutes = require("./api/routes/register");
 
 // = Middleware ================
 app.use(morgan("dev"));
@@ -30,6 +32,8 @@ app.use("/api/budgets", budgetRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/balances", balanceRoutes);
+app.use("/api/login", loginRoutes);
+app.use("/api/register", registerRoutes);
 
 // = Error messaging for missing resources or system error
 app.use((req, res, next) => {
