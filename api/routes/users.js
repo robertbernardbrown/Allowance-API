@@ -7,15 +7,22 @@ router.get("/:userId", (req, res, next)=>{
     db.User.findOne({where: {id: req.params.userId}})
     .then(result=>{
         console.log(result);
-        res.status(200).json({
-            message: "Here's your information",
-            info: result
-        })
+        if (result) {
+            res.status(200).json({
+                message: "Here's your information",
+                info: result
+            })
+        } else {
+            res.status(404).json({
+                message: "We can't find your information!",
+                info: result
+            })
+        }
     })
     .catch(err=>{
         console.log(err);
-        res.status(404).json({
-            message: "Couldn't find your information",
+        res.status(500).json({
+            message: "There was an error fetching your data!",
             error: err
         })
     })
@@ -24,6 +31,34 @@ router.get("/:userId", (req, res, next)=>{
 //Change selected user account property
 router.put("/:userId", (req, res, next)=>{
     const updateProp = req.body
+    if (Object.keys(updateProp)[0] === "userEmail") {
+        db.User
+        .findOne({where: {userEmail:req.body.userEmail}})
+        .then(result => {
+            console.log(result);
+            if (result){
+                res.status(200).json({
+                    message: "This email exists already, please try another."
+                })
+            } else {
+                db.User
+                .update(updateProp, {where: {id:req.params.userId}})
+                .then(result=>{
+                    console.log(result);
+                    res.status(201).json({
+                        message: "Email updated!",
+                        result: result
+                    })
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: "There was an error fetching the data!",
+                result: err
+            })
+        })
+    }
     db.User
     .update(updateProp, {where: {id:req.params.userId}})
     .then(result=>{

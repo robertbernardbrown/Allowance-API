@@ -22,7 +22,7 @@ router.post("/", (req, res, next)=>{
             })
         } else {
             res.status(400).json({
-                message: "User exists already"
+                message: "User exists already with that email!"
             })
         }
     })

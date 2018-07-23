@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "test": "nothing",
-    "start": "nodemon server.js"
+    "start-dev": "NODE_ENV=development nodemon server.js",
+    "start-prod": "NODE_ENV=production nodemon server.js"
   },
   "private": false,
   "dependencies": {
