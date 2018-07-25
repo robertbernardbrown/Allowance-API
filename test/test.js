@@ -10,21 +10,21 @@ chai.use(chaiHttp);
 //Our parent block
 describe('Users', () => {
 
-    before((done) => {
-        db.sequelize.sync({force : true})
-          .then(() => {
-            done();
-          })
-          .catch(() => {
-            done();
-          });       
-    });
+  before((done) => {
+      db.sequelize.sync({force : true})
+        .then(() => {
+          done();
+        })
+        .catch(() => {
+          done();
+        });       
+  });
 
   /*
-  * Test the /GET route
+  * Test the GET route
   */
-  describe('/GET user', () => {
-      it('it should GET a user based on their id', (done) => {
+  describe('GET user', () => {
+    it('it should GET a user based on their id', (done) => {
         chai.request(server)
             .get('/api/users/1')
             .end((err, res) => {
@@ -33,7 +33,58 @@ describe('Users', () => {
                 res.body.message.should.include("We can\'t find your information!");
               done();
             });
+    });
+  });
+
+  describe('POST user', () => {
+    it('it should POST a new user to the /register route', (done) => {
+    let userInfo = {
+        userName: "Billybob",
+        userEmail: "billybob@gmail.com",
+        userPassword: "billybob123"
+    }
+    chai.request(server)
+        .post('/api/register')
+        .send(userInfo)
+        .end((err, res) => {
+            res.should.have.status(201);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include('User created!');
+          done();
+        });
+    });
+
+    it('it should not POST a new user with incomplete data on /register route', (done) => {
+      let userInfo = {
+          userEmail: "billybob123@gmail.com",
+          userPassword: "billybob123"
+      }
+      chai.request(server)
+          .post('/api/register')
+          .send(userInfo)
+          .end((err, res) => {
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              res.body.should.have.property('error');
+              res.body.message.should.include("There was an error processing your information");
+              res.body.error.should.have.property("name");
+              res.body.error.name.should.include("SequelizeValidationError");
+              res.body.error.should.have.property("errors");
+              res.body.error.errors.should.have.an("array");
+            done();
+          });
       });
+  });
+
+  after((done) => {
+    db.sequelize.sync({force : true})
+      .then(() => {
+        done();
+      })
+      .catch(() => {
+        done();
+      });       
   });
 
 });
