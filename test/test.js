@@ -28,9 +28,9 @@ describe('Users', () => {
         chai.request(server)
             .get('/api/users/1')
             .end((err, res) => {
-                res.should.have.status(404);
-                res.body.should.be.an('object');
-                res.body.message.should.include("We can\'t find your information!");
+              res.should.have.status(404);
+              res.body.should.be.an('object');
+              res.body.message.should.include("We can\'t find your information!");
               done();
             });
     });
@@ -47,10 +47,10 @@ describe('Users', () => {
         .post('/api/register')
         .send(userInfo)
         .end((err, res) => {
-            res.should.have.status(201);
-            res.body.should.be.a('object');
-            res.body.should.have.property('message');
-            res.body.message.should.include('User created!');
+          res.should.have.status(201);
+          res.body.should.be.a('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('User created!');
           done();
         });
     });
@@ -64,17 +64,37 @@ describe('Users', () => {
           .post('/api/register')
           .send(userInfo)
           .end((err, res) => {
-              res.body.should.be.a('object');
-              res.body.should.have.property('message');
-              res.body.should.have.property('error');
-              res.body.message.should.include("There was an error processing your information");
-              res.body.error.should.have.property("name");
-              res.body.error.name.should.include("SequelizeValidationError");
-              res.body.error.should.have.property("errors");
-              res.body.error.errors.should.have.an("array");
+            res.should.have.status(500);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message');
+            res.body.should.have.property('error');
+            res.body.message.should.include("There was an error processing your information");
+            res.body.error.should.have.property("name");
+            res.body.error.name.should.include("SequelizeValidationError");
+            res.body.error.should.have.property("errors");
+            res.body.error.errors.should.have.an("array");
+            res.body.error.errors[0].message.should.include("User.userName cannot be null");
             done();
           });
       });
+
+      it('it should not POST a new user with duplicate email as another user on /register route', (done) => {
+        let userInfo = {
+          userName: "Billybob2",
+          userEmail: "billybob@gmail.com",
+          userPassword: "billybob123"
+        }
+        chai.request(server)
+            .post('/api/register')
+            .send(userInfo)
+            .end((err, res) => {
+              res.should.have.status(400);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              res.body.message.should.include("User exists already with that email!");
+              done();
+            });
+        });
   });
 
   after((done) => {
