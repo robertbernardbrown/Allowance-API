@@ -12,13 +12,20 @@ module.exports = function(sequelize, DataTypes) {
       },
       budgetMonth: {
         type: DataTypes.INTEGER,
+        unique: true,
         allowNull: false,
         validate: {
+            max: 11,
             isNumeric: true,
         }
       },
       userId: {
         type: DataTypes.INTEGER,
+        foreignKey: true,
+        references: {
+          model: "Users",
+          key: 'id',
+        },
         allowNull: false
       }
       

@@ -6,7 +6,6 @@ const db = require("../models");
 router.get("/:userId", (req, res, next)=>{
     db.User.findOne({where: {id: req.params.userId}})
     .then(result=>{
-        console.log(result);
         if (result) {
             res.status(200).json({
                 message: "Here's your information",
