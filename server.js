@@ -13,3 +13,5 @@ db.sequelize.sync().then(function() {
         server.emit('serverStarted');
     });
 });
+
+module.exports = server;
