@@ -7,9 +7,6 @@ chai.use(chaiHttp);
 
 describe('Users model', () => {
 
-  /*
-  * Test the GET route
-  */
   describe('GET user', () => {
     it('it should GET a user based on their id', (done) => {
         chai.request(server)
