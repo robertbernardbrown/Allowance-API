@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 describe('Users model', () => {
 
   describe('GET user', () => {
-    it('it should GET a user based on their id', (done) => {
+    it('it should GET a user based on their Id', (done) => {
         chai.request(server)
             .get('/api/users/1')
             .end((err, res) => {
