@@ -1,24 +1,11 @@
 const db = require("../api/models");
-
-//Require the dev-dependencies
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
 const should = chai.should();
 chai.use(chaiHttp);
 
-//Our parent block
-describe('Users', () => {
-
-  before((done) => {
-      db.sequelize.sync({force : true})
-        .then(() => {
-          done();
-        })
-        .catch(() => {
-          done();
-        });       
-  });
+describe('Users model', () => {
 
   /*
   * Test the GET route
