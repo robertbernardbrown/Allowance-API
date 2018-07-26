@@ -7,6 +7,16 @@ chai.use(chaiHttp);
 
 describe('Users model', () => {
 
+  before((done) => {
+    db.sequelize.sync({force : true})
+      .then(() => {
+        done();
+      })
+      .catch(() => {
+        done();
+      });       
+  });
+
   describe('GET user', () => {
     it('it should GET a user based on their Id', (done) => {
         chai.request(server)
