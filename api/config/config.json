@@ -8,6 +8,15 @@
       "port": 3306,
       "operatorsAliases": false
     },
+    "travis": {
+      "username": "travis",
+      "password": "",
+      "database": "allowance",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3306,
+      "operatorsAliases": false
+    },
     "test": {
       "username": "bobbrown1118",
       "password": "root",
