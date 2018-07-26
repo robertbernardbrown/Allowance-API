@@ -14,7 +14,7 @@ describe('Users model', () => {
       })
       .catch(() => {
         done();
-      });       
+      });
   });
 
   describe('GET user', () => {
