@@ -145,7 +145,6 @@ describe('API tests', () => {
           .post('/api/budgets/1')
           .send(budget)
           .end((err, res) => {
-            console.log(res);
             res.should.have.status(200);
             res.body.should.be.an('object');
             res.body.should.have.property('message');
@@ -165,6 +164,46 @@ describe('API tests', () => {
         });
     });
 
+    describe('PUT budget', () => {
+      it("it should return a message if a PUT is sent to a month that doesn't exist yet", (done) => {
+      const budget = {
+        budget: 200,
+        budgetMonth: 2,
+        userId: 1
+      }
+      chai.request(server)
+        .put('/api/budgets/1')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("You don't seem to have a budget to update there yet!");
+          done();
+        });
+      });
+
+      it("it should return an confirmation message if a PUT message succeeds", (done) => {
+        const budget = {
+          budget: 500,
+          budgetMonth: 1,
+          userId: 1
+        }
+        chai.request(server)
+          .put('/api/budgets/1')
+          .send(budget)
+          .end((err, res) => {
+            console.log(res);
+            res.should.have.status(201);
+            res.body.should.be.an('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Updated budget!");
+            res.body.should.have.property('budget');
+            res.body.budget.should.be.an('array').that.includes(1)
+            done();
+          });
+        });
+    });
   }); 
 
   //after hook to drop and make tables before tests run

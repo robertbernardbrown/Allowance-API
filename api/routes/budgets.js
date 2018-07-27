@@ -48,7 +48,6 @@ router.put("/:userId", (req, res, next)=>{
     db.Budget
     .update(newBudget, {where:{userId:req.params.userId, budgetMonth:newBudget.budgetMonth}})
     .then(result => {
-        console.log(result[0]>0)
         if (result[0]>0){
             res.status(201).json({message: "Updated budget!", budget: result})
         } else {
