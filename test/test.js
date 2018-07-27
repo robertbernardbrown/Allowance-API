@@ -114,7 +114,7 @@ describe('API tests', () => {
     });
 
     describe('POST budget', () => {
-      it('it should return an error message if any piece of budget data is missing', (done) => {
+      it('it should return an error message if budgetMonth is missing', (done) => {
       const budget = {
         budget: 200,
         userId: 1
@@ -134,6 +134,35 @@ describe('API tests', () => {
           done();
         });
       });
+
+      it('it should POST a budget with valid data', (done) => {
+        const budget = {
+          budget: 200,
+          budgetMonth: 1,
+          userId: 1
+        }
+        chai.request(server)
+          .post('/api/budgets/1')
+          .send(budget)
+          .end((err, res) => {
+            console.log(res);
+            res.should.have.status(200);
+            res.body.should.be.an('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Posted new budget!");
+            res.body.should.have.property('budget');
+            res.body.budget.should.be.an('object');
+            res.body.budget.should.have.property('id');
+            res.body.budget.should.have.property('budget');
+            res.body.budget.should.have.property('budgetMonth');
+            res.body.budget.should.have.property('userId');
+            res.body.budget.budget.should.be.a("number");
+            res.body.budget.budgetMonth.should.be.a('number');
+            res.body.budget.id.should.be.a('number');
+            res.body.budget.userId.should.be.a('string');
+            done();
+          });
+        });
     });
 
   }); 
