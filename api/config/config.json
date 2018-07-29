@@ -2,7 +2,7 @@
     "development": {
       "username": "root",
       "password": "root",
-      "database": "allowance",
+      "database": "allowanceTest",
       "host": "localhost",
       "dialect": "mysql",
       "port": 3306,

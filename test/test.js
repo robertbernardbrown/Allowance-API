@@ -245,6 +245,37 @@ describe('API tests', () => {
     });
   }); 
 
+  //========TEST SUITE THREE = Transaction MODEL========
+  describe('Transaction model', () => {
+
+    describe('GET transaction', () => {
+      it('it should return an confirmation that no budgets exist if no budgets exist', (done) => {
+        chai.request(server)
+            .get('/api/budgets/1')
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.an('object');
+              res.body.should.have.property('message');
+              res.body.message.should.include("You have no budgets to display yet");
+              done();
+            });
+      });
+    });
+
+    describe('POST transaction', () => {
+
+    });
+
+    describe('PUT transaction', () => {
+
+    });
+
+    describe('DELETE transaction', () => {
+
+
+    });
+  });
+
   //after hook to drop tables after run
   after((done) => {
     db.sequelize.sync({force : true})

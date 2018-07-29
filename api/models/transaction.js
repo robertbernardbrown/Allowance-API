@@ -22,7 +22,11 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false,
         validate: {
             isNumeric: true,
-        }
+        },
+        references: {
+          model: "Budgets",
+          key: 'budgetMonth',
+        },
       },
       userId: {
         type: DataTypes.INTEGER,
