@@ -245,7 +245,7 @@ describe('API tests', () => {
     });
   }); 
 
-  //after hook to drop and make tables before tests run
+  //after hook to drop tables after run
   after((done) => {
     db.sequelize.sync({force : true})
       .then(() => {
