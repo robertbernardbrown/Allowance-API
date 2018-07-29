@@ -184,25 +184,64 @@ describe('API tests', () => {
       });
 
       it("it should return an confirmation message if a PUT message succeeds", (done) => {
-        const budget = {
-          budget: 500,
-          budgetMonth: 1,
-          userId: 1
-        }
-        chai.request(server)
-          .put('/api/budgets/1')
-          .send(budget)
-          .end((err, res) => {
-            console.log(res);
-            res.should.have.status(201);
-            res.body.should.be.an('object');
-            res.body.should.have.property('message');
-            res.body.message.should.include("Updated budget!");
-            res.body.should.have.property('budget');
-            res.body.budget.should.be.an('array').that.includes(1)
-            done();
-          });
+      const budget = {
+        budget: 500,
+        budgetMonth: 1,
+        userId: 1
+      }
+      chai.request(server)
+        .put('/api/budgets/1')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("Updated budget!");
+          res.body.should.have.property('budget');
+          res.body.budget.should.be.an('array').that.includes(1)
+          done();
         });
+      });
+    });
+
+    describe('DELETE budget', () => {
+
+      it("it should return a message if a DELETE is sent to a month that doesn't exist yet", (done) => {
+      const budget = {
+        budgetMonth: 2,
+        userId: 1
+      }
+      chai.request(server)
+        .delete('/api/budgets/1')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("You don't have a budget there to delete!");
+          done();
+        });
+      });
+
+      it("it should return a message if a DELETE is successful", (done) => {
+      const budget = {
+        budgetMonth: 1,
+        userId: 1
+      }
+      chai.request(server)
+        .delete('/api/budgets/1')
+        .send(budget)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("Budget deleted!");
+          res.body.should.have.property('result');
+          res.body.result.should.be.a("number");
+          res.body.result.should.equal(1);
+          done();
+        });
+      });
     });
   }); 
 
