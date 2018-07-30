@@ -369,7 +369,7 @@ describe('API tests', () => {
     describe('PUT transaction', () => {
 
       it('it should fail at updating a transaction with missing info in PUT request', (done) => {
-        const transaction = {
+        const newTransaction = {
           transactionType: "subtract",
           transactionAmount: 50,
           transactionReceipt: "groceries",
@@ -377,35 +377,37 @@ describe('API tests', () => {
         }
         chai.request(server)
         .put('/api/transactions/1')
-        .send(transaction)
+        .send(newTransaction)
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.an('object');
           res.body.should.have.property('message');
-          res.body.message.should.include('Failed to update transaction');
-          res.body.should.have.property('error');
+          res.body.message.should.include("We couldn\'t find a transaction to update there");
+          res.body.should.have.property('result');
           done();
         });
       });
 
-      it('it should fail at updating a transaction with missing info in PUT request', (done) => {
-        const transaction = {
+      it('it should succeed updating a transaction with full info PUT request', (done) => {
+        const newTransaction = {
           id: 1,
-          transactionType: "subtract",
+          transactionType: "add",
           transactionAmount: 50,
           transactionReceipt: "groceries",
-          transactionMonth: 1
+          transactionMonth: 1,
+          userId: 1
         }
         chai.request(server)
         .put('/api/transactions/1')
-        .send(transaction)
+        .send(newTransaction)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
           res.body.should.have.property('message');
           res.body.message.should.include('Transaction updated!');
           res.body.should.have.property('result');
-          res.body.result.should.be.an('object');
+          res.body.result.should.be.an('array');
+          res.body.result[0].should.equal(1);
           done();
         });
       });

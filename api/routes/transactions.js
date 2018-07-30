@@ -24,9 +24,36 @@ router.get("/:userId", (req, res, next)=>{
 });
 
 router.put("/:userId", (req, res, next)=>{
-    res.status(200).json({
-        message: "Updated transaction!"
+    const newTransaction = {
+        id: req.body.id,
+        transactionType: req.body.transactionType,
+        transactionAmount: req.body.transactionAmount,
+        transactionReceipt: req.body.transactionReceipt,
+        transactionMonth: req.body.transactionMonth,
+        userId: req.params.userId
+    }
+    db.Transaction
+    .update(newTransaction, {where:{id:newTransaction.id}})
+    .then(result => {
+        console.log(result);
+        if (result[0]>0) {
+            res.status(200).json({
+                message: "Transaction updated!",
+                result: result
+            })
+        } else {
+            res.status(400).json({
+                message: "We couldn't find a transaction to update there",
+                result: result
+            })
+        }
     })
+    .catch(err => {
+        res.status(500).json({
+            message: "There was an internal error processing that transaction!"
+        })
+    })
+    
 });
 
 router.post("/:userId", (req, res, next)=>{
