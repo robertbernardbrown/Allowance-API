@@ -243,26 +243,99 @@ describe('API tests', () => {
         });
       });
     });
-  }); 
+  });
 
   //========TEST SUITE THREE = Transaction MODEL========
   describe('Transaction model', () => {
 
+    // post to Budget table before testing transation routes
+    before((done) => {
+      const budget = {
+        budget: 200,
+        budgetMonth: 1,
+        userId: 1
+      }
+      db.Budget
+      .create(budget)
+        .then((result) => {
+          console.log(result)
+          done();
+        })
+        .catch(() => {
+          done();
+        });
+    });
+
     describe('GET transaction', () => {
-      it('it should return an confirmation that no budgets exist if no budgets exist', (done) => {
+      it('it should return no budgets with accompanying message that there are no budgets', (done) => {
         chai.request(server)
-            .get('/api/budgets/1')
+            .get('/api/transactions/1')
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.an('object');
               res.body.should.have.property('message');
-              res.body.message.should.include("You have no budgets to display yet");
+              res.body.message.should.include('You have no budgets to display yet');
               done();
             });
       });
     });
 
     describe('POST transaction', () => {
+      it('it should fail posting a new transaction without all required information', (done) => {
+      const transaction = {
+        transactionType: "subtract",
+        transactionAmount: 50,
+        transactionMonth: 1
+      }
+      chai.request(server)
+          .post('/api/transactions/1')
+          .send(transaction)
+          .end((err, res) => {
+            res.should.have.status(500);
+            res.body.should.be.an('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Something went wrong posting that transaction!");
+            res.body.should.have.property('error');
+            res.body.error.should.have.property("name");
+            res.body.error.name.should.include("SequelizeValidationError");
+            res.body.error.should.have.property("errors");
+            res.body.error.errors[0].message.should.include("Transaction.transactionReceipt cannot be null");
+            done();
+          });
+      });
+
+      it('it should succeed posting a new transaction with all required information', (done) => {
+      const transaction = {
+        transactionType: "subtract",
+        transactionAmount: 50,
+        transactionReceipt: "groceries",
+        transactionMonth: 1
+      }
+      chai.request(server)
+          .post('/api/transactions/1')
+          .send(transaction)
+          .end((err, res) => {
+            res.should.have.status(201);
+            res.body.should.be.an('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Posted new transaction!");
+            res.body.should.have.property('budget');
+            res.body.budget.should.be.an("object");
+            res.body.budget.should.have.property("id");
+            res.body.budget.id.should.equal(1);
+            res.body.budget.should.have.property("transactionType");
+            res.body.budget.transactionType.should.include("subtract");
+            res.body.budget.should.have.property("transactionAmount");
+            res.body.budget.transactionAmount.should.equal(50);
+            res.body.budget.should.have.property("transactionReceipt");
+            res.body.budget.transactionReceipt.should.include("groceries");
+            res.body.budget.should.have.property("transactionMonth");
+            res.body.budget.transactionMonth.should.equal(1);
+            res.body.budget.should.have.property("userId");
+            res.body.budget.userId.should.include("1");
+            done();
+          });
+        });
 
     });
 
