@@ -12,10 +12,6 @@ router.post("/", (req, res, next)=>{
     db.User
     .findOrCreate({where: {userEmail: req.body.userEmail}, defaults: userInfo})
     .spread((user, created) => {
-        console.log(user.get({
-          plain: true
-        }))
-        console.log(created)
         if (created) {
             res.status(201).json({
                 message: "User created!"
@@ -27,7 +23,6 @@ router.post("/", (req, res, next)=>{
         }
     })
     .catch(err=>{
-        console.log(err);
         res.status(500).json({
             message: "There was an error processing your information",
             error: err

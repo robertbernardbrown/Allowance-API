@@ -35,7 +35,6 @@ router.put("/:userId", (req, res, next)=>{
     db.Transaction
     .update(newTransaction, {where:{id:newTransaction.id}})
     .then(result => {
-        console.log(result);
         if (result[0]>0) {
             res.status(200).json({
                 message: "Transaction updated!",
@@ -50,7 +49,8 @@ router.put("/:userId", (req, res, next)=>{
     })
     .catch(err => {
         res.status(500).json({
-            message: "There was an internal error processing that transaction!"
+            message: "There was an internal error processing that transaction!",
+            error: err
         })
     })
     
@@ -75,9 +75,31 @@ router.post("/:userId", (req, res, next)=>{
 });
 
 router.delete("/:userId", (req, res, next)=>{
-    res.status(200).json({
-        message: "Deleted transaction!"
+    db.Transaction
+    .destroy({where:{id:req.body.id}})
+    .then(result => {
+        if (result) {
+            res.status(200).json({
+                message: "Deleted transaction!",
+                result: result
+            })
+        } else {
+            res.status(404).json({
+                message: "We couldn\'t find a transaction to delete there",
+                result: result
+            })
+        }
     })
+    .catch(err => {
+        res.status(500).json({
+            message: "There was an internal server issue deleting that transaction",
+            error: err
+        })
+    })
+
+
+
+    
 });
 
 

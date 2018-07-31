@@ -258,7 +258,6 @@ describe('API tests', () => {
       db.Budget
       .create(budget)
         .then((result) => {
-          console.log(result)
           done();
         })
         .catch(() => {
@@ -415,7 +414,41 @@ describe('API tests', () => {
 
     describe('DELETE transaction', () => {
 
+      it('it should fail at deleting a transaction with incorrect target on DELETE request', (done) => {
+        const delTransaction = {
+          id: 3
+        }
+        chai.request(server)
+        .delete('/api/transactions/1')
+        .send(delTransaction)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("We couldn\'t find a transaction to delete there");
+          res.body.should.have.property('result');
+          res.body.result.should.equal(0)
+          done();
+        });
+      });
 
+      it('it should succeed at deleting a transaction with correct target on DELETE request', (done) => {
+        const delTransaction = {
+          id: 1
+        }
+        chai.request(server)
+        .delete('/api/transactions/1')
+        .send(delTransaction)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("Deleted transaction!");
+          res.body.should.have.property('result');
+          res.body.result.should.equal(1)
+          done();
+        });
+      });
     });
   });
 

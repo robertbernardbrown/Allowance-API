@@ -67,7 +67,6 @@ router.delete("/:userId", (req, res, next)=>{
     db.Budget
     .destroy({where:deleteBudget})
     .then(result => {
-        console.log(result);
         if (result){
             res.status(200).json({
                 message: "Budget deleted!",
