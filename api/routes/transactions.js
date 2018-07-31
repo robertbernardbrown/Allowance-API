@@ -1,28 +1,58 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../models");
+const querystring = require('querystring');
+var url = require('url');
 
-router.get("/:userId", (req, res, next)=>{
+// GET all existing transactions for a user as default, can also specify transactions of certain type
+router.get("/:userId/?:searchTerm?", (req, res, next)=>{
     const id = req.params.userId;
-    db.Transaction
-    .findAll({where: {userId:id}})
-    .then(result => {
-        if (result.length){
-            res.status(200).json({
-                message: "Here are your budgets: ",
-                result: result
-            })
-        } else {
-            res.status(200).json({
-                message: "You have no budgets to display yet",
-            })
-        }
-    })
-    .catch(err => {
-        res.status(500).json({message: "Something went wrong fetching that budget!", error: err})
-    })
+    const searchTerm = req.params.searchTerm
+    const parsedTerm = querystring.parse(searchTerm)
+    const parsedId = querystring.parse(id)
+    console.log(parsedTerm)
+    if (searchTerm){
+        db.Transaction
+        .findAll({where: [{userId:id}, parsedTerm]})
+        .then(result => {
+            if (result.length){
+                res.status(200).json({
+                    message: "Here are your transactions: ",
+                    result: result
+                })
+            } else {
+                res.status(200).json({
+                    message: "You have no transactions to display yet",
+                    result: result
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Something went wrong fetching that transaction!", error: err})
+        })
+    } else {
+        console.log("RUNNING")
+        db.Transaction
+        .findAll({where: {userId:id}})
+        .then(result => {
+            if (result.length){
+                res.status(200).json({
+                    message: "Here are your transactions: ",
+                    result: result
+                })
+            } else {
+                res.status(200).json({
+                    message: "You have no transactions to display yet",
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({message: "Something went wrong fetching that transaction!", error: err})
+        })
+    }
 });
 
+// PUT a transaction for a user
 router.put("/:userId", (req, res, next)=>{
     const newTransaction = {
         id: req.body.id,
@@ -56,6 +86,7 @@ router.put("/:userId", (req, res, next)=>{
     
 });
 
+// POST a transaction for a user
 router.post("/:userId", (req, res, next)=>{
     const transaction = {
         transactionType: req.body.transactionType,
@@ -74,6 +105,7 @@ router.post("/:userId", (req, res, next)=>{
     })
 });
 
+//delete a transaction for a user
 router.delete("/:userId", (req, res, next)=>{
     db.Transaction
     .destroy({where:{id:req.body.id}})
@@ -96,10 +128,6 @@ router.delete("/:userId", (req, res, next)=>{
             error: err
         })
     })
-
-
-
-    
 });
 
 

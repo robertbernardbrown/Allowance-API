@@ -266,14 +266,14 @@ describe('API tests', () => {
     });
 
     describe('GET transaction without budget', () => {
-      it('it should return no budgets with accompanying message that there are no budgets', (done) => {
+      it('it should return no transactions with accompanying message that there are no budgets', (done) => {
         chai.request(server)
             .get('/api/transactions/1')
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.an('object');
               res.body.should.have.property('message');
-              res.body.message.should.include('You have no budgets to display yet');
+              res.body.message.should.include('You have no transactions to display yet');
               done();
             });
       });
@@ -345,7 +345,7 @@ describe('API tests', () => {
           res.should.have.status(200);
           res.body.should.be.an('object');
           res.body.should.have.property('message');
-          res.body.message.should.include('Here are your budgets: ');
+          res.body.message.should.include('Here are your transactions: ');
           res.body.should.have.property('result');
           res.body.result.should.be.an('array');
           res.body.result[0].should.have.property("id");
@@ -364,6 +364,50 @@ describe('API tests', () => {
         });
       });
     });
+
+    describe('GET specific transaction', () => {
+
+      it('it should return transactions meeting a specific criteria', (done) => {
+        chai.request(server)
+        .get('/api/transactions/1/transactionType=subtract')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('Here are your transactions: ');
+          res.body.should.have.property('result');
+          res.body.result.should.be.an('array');
+          res.body.result[0].should.have.property("id");
+          res.body.result[0].id.should.equal(1);
+          res.body.result[0].should.have.property("transactionType");
+          res.body.result[0].transactionType.should.include("subtract");
+          res.body.result[0].should.have.property("transactionAmount");
+          res.body.result[0].transactionAmount.should.equal(50);
+          res.body.result[0].should.have.property("transactionReceipt");
+          res.body.result[0].transactionReceipt.should.include("groceries");
+          res.body.result[0].should.have.property("transactionMonth");
+          res.body.result[0].transactionMonth.should.equal(1);
+          res.body.result[0].should.have.property("userId");
+          res.body.result[0].userId.should.equal(1);
+          done();
+        });
+      });
+
+      it('it should return message without transaction if search unsuccessful', (done) => {
+        chai.request(server)
+        .get('/api/transactions/1/transactionType=add')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('You have no transactions to display yet');
+          res.body.should.have.property('result');
+          done();
+        });
+      });
+    });
+
+    
 
     describe('PUT transaction', () => {
 
