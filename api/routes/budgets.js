@@ -51,7 +51,7 @@ router.put("/:userId", (req, res, next)=>{
         if (result[0]>0){
             res.status(201).json({message: "Updated budget!", budget: result})
         } else {
-            res.status(200).json({message: "You don't seem to have a budget to update there yet!"})
+            res.status(400).json({message: "You don't seem to have a budget to update there yet!"})
         }
     })
     .catch(err => {
@@ -67,7 +67,6 @@ router.delete("/:userId", (req, res, next)=>{
     db.Budget
     .destroy({where:deleteBudget})
     .then(result => {
-        console.log(result);
         if (result){
             res.status(200).json({
                 message: "Budget deleted!",

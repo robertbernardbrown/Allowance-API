@@ -175,7 +175,7 @@ describe('API tests', () => {
         .put('/api/budgets/1')
         .send(budget)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(400);
           res.body.should.be.an('object');
           res.body.should.have.property('message');
           res.body.message.should.include("You don't seem to have a budget to update there yet!");
@@ -243,7 +243,258 @@ describe('API tests', () => {
         });
       });
     });
-  }); 
+  });
+
+  //========TEST SUITE THREE = Transaction MODEL========
+  describe('Transaction model', () => {
+
+    // post to Budget table before testing transation routes
+    before((done) => {
+      const budget = {
+        budget: 200,
+        budgetMonth: 1,
+        userId: 1
+      }
+      db.Budget
+      .create(budget)
+        .then((result) => {
+          done();
+        })
+        .catch(() => {
+          done();
+        });
+    });
+
+    describe('GET transaction without budget', () => {
+      it('it should return no transactions with accompanying message that there are no budgets', (done) => {
+        chai.request(server)
+            .get('/api/transactions/1')
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.an('object');
+              res.body.should.have.property('message');
+              res.body.message.should.include('You have no transactions to display yet');
+              done();
+            });
+      });
+    });
+
+    describe('POST transaction', () => {
+      it('it should fail posting a new transaction without all required information', (done) => {
+      const transaction = {
+        transactionType: "subtract",
+        transactionAmount: 50,
+        transactionMonth: 1
+      }
+      chai.request(server)
+          .post('/api/transactions/1')
+          .send(transaction)
+          .end((err, res) => {
+            res.should.have.status(500);
+            res.body.should.be.an('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Something went wrong posting that transaction!");
+            res.body.should.have.property('error');
+            res.body.error.should.have.property("name");
+            res.body.error.name.should.include("SequelizeValidationError");
+            res.body.error.should.have.property("errors");
+            res.body.error.errors[0].message.should.include("Transaction.transactionReceipt cannot be null");
+            done();
+          });
+      });
+
+      it('it should succeed posting a new transaction with all required information', (done) => {
+      const transaction = {
+        transactionType: "subtract",
+        transactionAmount: 50,
+        transactionReceipt: "groceries",
+        transactionMonth: 1
+      }
+      chai.request(server)
+        .post('/api/transactions/1')
+        .send(transaction)
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("Posted new transaction!");
+          res.body.should.have.property('budget');
+          res.body.budget.should.be.an("object");
+          res.body.budget.should.have.property("id");
+          res.body.budget.id.should.equal(1);
+          res.body.budget.should.have.property("transactionType");
+          res.body.budget.transactionType.should.include("subtract");
+          res.body.budget.should.have.property("transactionAmount");
+          res.body.budget.transactionAmount.should.equal(50);
+          res.body.budget.should.have.property("transactionReceipt");
+          res.body.budget.transactionReceipt.should.include("groceries");
+          res.body.budget.should.have.property("transactionMonth");
+          res.body.budget.transactionMonth.should.equal(1);
+          res.body.budget.should.have.property("userId");
+          res.body.budget.userId.should.include("1");
+          done();
+        });
+      });
+    });
+
+    describe('GET transaction with budget', () => {
+      it('it should return all existing transactions', (done) => {
+        chai.request(server)
+        .get('/api/transactions/1')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('Here are your transactions: ');
+          res.body.should.have.property('result');
+          res.body.result.should.be.an('array');
+          res.body.result[0].should.have.property("id");
+          res.body.result[0].id.should.equal(1);
+          res.body.result[0].should.have.property("transactionType");
+          res.body.result[0].transactionType.should.include("subtract");
+          res.body.result[0].should.have.property("transactionAmount");
+          res.body.result[0].transactionAmount.should.equal(50);
+          res.body.result[0].should.have.property("transactionReceipt");
+          res.body.result[0].transactionReceipt.should.include("groceries");
+          res.body.result[0].should.have.property("transactionMonth");
+          res.body.result[0].transactionMonth.should.equal(1);
+          res.body.result[0].should.have.property("userId");
+          res.body.result[0].userId.should.equal(1);
+          done();
+        });
+      });
+    });
+
+    describe('GET specific transaction', () => {
+
+      it('it should return transactions meeting a specific criteria', (done) => {
+        chai.request(server)
+        .get('/api/transactions/1/transactionType=subtract')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('Here are your transactions: ');
+          res.body.should.have.property('result');
+          res.body.result.should.be.an('array');
+          res.body.result[0].should.have.property("id");
+          res.body.result[0].id.should.equal(1);
+          res.body.result[0].should.have.property("transactionType");
+          res.body.result[0].transactionType.should.include("subtract");
+          res.body.result[0].should.have.property("transactionAmount");
+          res.body.result[0].transactionAmount.should.equal(50);
+          res.body.result[0].should.have.property("transactionReceipt");
+          res.body.result[0].transactionReceipt.should.include("groceries");
+          res.body.result[0].should.have.property("transactionMonth");
+          res.body.result[0].transactionMonth.should.equal(1);
+          res.body.result[0].should.have.property("userId");
+          res.body.result[0].userId.should.equal(1);
+          done();
+        });
+      });
+
+      it('it should return message without transaction if search unsuccessful', (done) => {
+        chai.request(server)
+        .get('/api/transactions/1/transactionType=add')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('You have no transactions to display yet');
+          res.body.should.have.property('result');
+          done();
+        });
+      });
+    });
+
+    
+
+    describe('PUT transaction', () => {
+
+      it('it should fail at updating a transaction with missing info in PUT request', (done) => {
+        const newTransaction = {
+          transactionType: "subtract",
+          transactionAmount: 50,
+          transactionReceipt: "groceries",
+          transactionMonth: 1
+        }
+        chai.request(server)
+        .put('/api/transactions/1')
+        .send(newTransaction)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("We couldn\'t find a transaction to update there");
+          res.body.should.have.property('result');
+          done();
+        });
+      });
+
+      it('it should succeed updating a transaction with full info PUT request', (done) => {
+        const newTransaction = {
+          id: 1,
+          transactionType: "add",
+          transactionAmount: 50,
+          transactionReceipt: "groceries",
+          transactionMonth: 1,
+          userId: 1
+        }
+        chai.request(server)
+        .put('/api/transactions/1')
+        .send(newTransaction)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include('Transaction updated!');
+          res.body.should.have.property('result');
+          res.body.result.should.be.an('array');
+          res.body.result[0].should.equal(1);
+          done();
+        });
+      });
+    });
+
+    describe('DELETE transaction', () => {
+
+      it('it should fail at deleting a transaction with incorrect target on DELETE request', (done) => {
+        const delTransaction = {
+          id: 3
+        }
+        chai.request(server)
+        .delete('/api/transactions/1')
+        .send(delTransaction)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("We couldn\'t find a transaction to delete there");
+          res.body.should.have.property('result');
+          res.body.result.should.equal(0)
+          done();
+        });
+      });
+
+      it('it should succeed at deleting a transaction with correct target on DELETE request', (done) => {
+        const delTransaction = {
+          id: 1
+        }
+        chai.request(server)
+        .delete('/api/transactions/1')
+        .send(delTransaction)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("Deleted transaction!");
+          res.body.should.have.property('result');
+          res.body.result.should.equal(1)
+          done();
+        });
+      });
+    });
+  });
 
   //after hook to drop tables after run
   after((done) => {
