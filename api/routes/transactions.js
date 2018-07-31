@@ -10,7 +10,6 @@ router.get("/:userId/?:searchTerm?", (req, res, next)=>{
     const searchTerm = req.params.searchTerm
     const parsedTerm = querystring.parse(searchTerm)
     const parsedId = querystring.parse(id)
-    console.log(parsedTerm)
     if (searchTerm){
         db.Transaction
         .findAll({where: [{userId:id}, parsedTerm]})
@@ -31,7 +30,6 @@ router.get("/:userId/?:searchTerm?", (req, res, next)=>{
             res.status(500).json({message: "Something went wrong fetching that transaction!", error: err})
         })
     } else {
-        console.log("RUNNING")
         db.Transaction
         .findAll({where: {userId:id}})
         .then(result => {
