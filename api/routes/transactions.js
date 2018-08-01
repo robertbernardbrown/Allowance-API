@@ -5,11 +5,10 @@ const querystring = require('querystring');
 var url = require('url');
 
 // GET all existing transactions for a user as default, can also specify transactions of certain type
-router.get("/:userId/?:searchTerm?", (req, res, next)=>{
+router.get("/:userId/:searchTerm?", (req, res, next)=>{
     const id = req.params.userId;
     const searchTerm = req.params.searchTerm
     const parsedTerm = querystring.parse(searchTerm)
-    const parsedId = querystring.parse(id)
     if (searchTerm){
         db.Transaction
         .findAll({where: [{userId:id}, parsedTerm]})
@@ -57,7 +56,7 @@ router.put("/:userId", (req, res, next)=>{
         transactionType: req.body.transactionType,
         transactionAmount: req.body.transactionAmount,
         transactionReceipt: req.body.transactionReceipt,
-        transactionMonth: req.body.transactionMonth,
+        transactionDate: req.body.transactionDate,
         userId: req.params.userId
     }
     db.Transaction
@@ -90,7 +89,7 @@ router.post("/:userId", (req, res, next)=>{
         transactionType: req.body.transactionType,
         transactionAmount: req.body.transactionAmount,
         transactionReceipt: req.body.transactionReceipt,
-        transactionMonth: req.body.transactionMonth,
+        transactionDate: req.body.transactionDate,
         userId: req.params.userId
     }
     db.Transaction

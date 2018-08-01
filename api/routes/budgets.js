@@ -26,7 +26,7 @@ router.get("/:userId", (req, res, next)=>{
 router.post("/:userId", (req, res, next)=>{
     const budget = {
         budget: req.body.budget,
-        budgetMonth: req.body.budgetMonth,
+        budgetDate: req.body.budgetDate,
         userId: req.params.userId
     }
     db.Budget
@@ -42,11 +42,11 @@ router.post("/:userId", (req, res, next)=>{
 router.put("/:userId", (req, res, next)=>{
     const newBudget = {
         budget: req.body.newBudget,
-        budgetMonth: req.body.budgetMonth,
+        budgetDate: req.body.budgetDate,
         userId: req.params.userId
     }
     db.Budget
-    .update(newBudget, {where:{userId:req.params.userId, budgetMonth:newBudget.budgetMonth}})
+    .update(newBudget, {where:{userId:req.params.userId, budgetDate:newBudget.budgetDate}})
     .then(result => {
         if (result[0]>0){
             res.status(201).json({message: "Updated budget!", budget: result})
@@ -61,7 +61,7 @@ router.put("/:userId", (req, res, next)=>{
 
 router.delete("/:userId", (req, res, next)=>{
     const deleteBudget = {
-        budgetMonth: req.body.budgetMonth,
+        budgetDate: req.body.budgetDate,
         userId: req.params.userId
     }
     db.Budget

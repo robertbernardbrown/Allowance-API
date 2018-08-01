@@ -9,11 +9,11 @@ module.exports = function(sequelize, DataTypes) {
             isNumeric: true,
         }
       },
-      balanceMonth: {
-        type: DataTypes.INTEGER,
+      balanceDate: {
+        type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-            isNumeric: true,
+            isDate: true,
         }
       },
       userId: {

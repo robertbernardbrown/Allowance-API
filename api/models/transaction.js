@@ -17,15 +17,15 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      transactionMonth: {
-        type: DataTypes.INTEGER,
+      transactionDate: {
+        type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-            isNumeric: true,
+            isDate: true,
         },
         references: {
           model: "Budgets",
-          key: 'budgetMonth',
+          key: 'budgetDate',
         },
       },
       userId: {

@@ -114,7 +114,7 @@ describe('API tests', () => {
     });
 
     describe('POST budget', () => {
-      it('it should return an error message if budgetMonth is missing', (done) => {
+      it('it should return an error message if budgetDate is missing', (done) => {
       const budget = {
         budget: 200,
         userId: 1
@@ -130,7 +130,7 @@ describe('API tests', () => {
           res.body.should.have.property('error');
           res.body.error.should.be.an('object');
           res.body.error.name.should.include('SequelizeValidationError');
-          res.body.error.errors[0].message.should.include('Budget.budgetMonth cannot be null');
+          res.body.error.errors[0].message.should.include('Budget.budgetDate cannot be null');
           done();
         });
       });
@@ -138,7 +138,7 @@ describe('API tests', () => {
       it('it should POST a budget with valid data', (done) => {
         const budget = {
           budget: 200,
-          budgetMonth: 1,
+          budgetDate: new Date(2018, 1),
           userId: 1
         }
         chai.request(server)
@@ -153,10 +153,11 @@ describe('API tests', () => {
             res.body.budget.should.be.an('object');
             res.body.budget.should.have.property('id');
             res.body.budget.should.have.property('budget');
-            res.body.budget.should.have.property('budgetMonth');
+            res.body.budget.should.have.property('budgetDate');
             res.body.budget.should.have.property('userId');
             res.body.budget.budget.should.be.a("number");
-            res.body.budget.budgetMonth.should.be.a('number');
+            res.body.budget.budgetDate.should.be.a('string');
+            res.body.budget.budgetDate.should.include('2018-02-01');
             res.body.budget.id.should.be.a('number');
             res.body.budget.userId.should.be.a('string');
             done();
@@ -168,7 +169,7 @@ describe('API tests', () => {
       it("it should return a message if a PUT is sent to a month that doesn't exist yet", (done) => {
       const budget = {
         budget: 200,
-        budgetMonth: 2,
+        budgetDate: new Date(2018, 2),
         userId: 1
       }
       chai.request(server)
@@ -183,10 +184,10 @@ describe('API tests', () => {
         });
       });
 
-      it("it should return an confirmation message if a PUT message succeeds", (done) => {
+      it("it should return a confirmation message if a PUT message succeeds", (done) => {
       const budget = {
         budget: 500,
-        budgetMonth: 1,
+        budgetDate: new Date(2018, 1),
         userId: 1
       }
       chai.request(server)
@@ -208,7 +209,7 @@ describe('API tests', () => {
 
       it("it should return a message if a DELETE is sent to a month that doesn't exist yet", (done) => {
       const budget = {
-        budgetMonth: 2,
+        budgetDate: new Date(2018, 2),
         userId: 1
       }
       chai.request(server)
@@ -225,7 +226,7 @@ describe('API tests', () => {
 
       it("it should return a message if a DELETE is successful", (done) => {
       const budget = {
-        budgetMonth: 1,
+        budgetDate: new Date(2018, 1),
         userId: 1
       }
       chai.request(server)
@@ -252,7 +253,7 @@ describe('API tests', () => {
     before((done) => {
       const budget = {
         budget: 200,
-        budgetMonth: 1,
+        budgetDate: new Date(2018, 1),
         userId: 1
       }
       db.Budget
@@ -284,7 +285,7 @@ describe('API tests', () => {
       const transaction = {
         transactionType: "subtract",
         transactionAmount: 50,
-        transactionMonth: 1
+        transactionDate: new Date(2018, 1)
       }
       chai.request(server)
           .post('/api/transactions/1')
@@ -308,7 +309,7 @@ describe('API tests', () => {
         transactionType: "subtract",
         transactionAmount: 50,
         transactionReceipt: "groceries",
-        transactionMonth: 1
+        transactionDate: new Date(2018, 1)
       }
       chai.request(server)
         .post('/api/transactions/1')
@@ -328,8 +329,8 @@ describe('API tests', () => {
           res.body.budget.transactionAmount.should.equal(50);
           res.body.budget.should.have.property("transactionReceipt");
           res.body.budget.transactionReceipt.should.include("groceries");
-          res.body.budget.should.have.property("transactionMonth");
-          res.body.budget.transactionMonth.should.equal(1);
+          res.body.budget.should.have.property("transactionDate");
+          res.body.budget.transactionDate.should.equal("2018-02-01");
           res.body.budget.should.have.property("userId");
           res.body.budget.userId.should.include("1");
           done();
@@ -356,8 +357,8 @@ describe('API tests', () => {
           res.body.result[0].transactionAmount.should.equal(50);
           res.body.result[0].should.have.property("transactionReceipt");
           res.body.result[0].transactionReceipt.should.include("groceries");
-          res.body.result[0].should.have.property("transactionMonth");
-          res.body.result[0].transactionMonth.should.equal(1);
+          res.body.result[0].should.have.property("transactionDate");
+          res.body.result[0].transactionDate.should.equal("2018-02-01");
           res.body.result[0].should.have.property("userId");
           res.body.result[0].userId.should.equal(1);
           done();
@@ -385,8 +386,8 @@ describe('API tests', () => {
           res.body.result[0].transactionAmount.should.equal(50);
           res.body.result[0].should.have.property("transactionReceipt");
           res.body.result[0].transactionReceipt.should.include("groceries");
-          res.body.result[0].should.have.property("transactionMonth");
-          res.body.result[0].transactionMonth.should.equal(1);
+          res.body.result[0].should.have.property("transactionDate");
+          res.body.result[0].transactionDate.should.equal("2018-02-01");
           res.body.result[0].should.have.property("userId");
           res.body.result[0].userId.should.equal(1);
           done();
@@ -416,7 +417,7 @@ describe('API tests', () => {
           transactionType: "subtract",
           transactionAmount: 50,
           transactionReceipt: "groceries",
-          transactionMonth: 1
+          transactionDate: new Date(2018, 1)
         }
         chai.request(server)
         .put('/api/transactions/1')
@@ -437,7 +438,7 @@ describe('API tests', () => {
           transactionType: "add",
           transactionAmount: 50,
           transactionReceipt: "groceries",
-          transactionMonth: 1,
+          transactionDate: new Date(2018, 1),
           userId: 1
         }
         chai.request(server)
@@ -495,6 +496,17 @@ describe('API tests', () => {
       });
     });
   });
+
+  //========TEST SUITE FOUR = Balances MODEL========
+  // describe('Balance model', () => {
+  //   describe('GET balance', () => {
+
+  //     it('it should fail at GETting a balance with incomplete information', (done) => {
+        
+  //       });
+  //     });
+  //   });
+
 
   //after hook to drop tables after run
   after((done) => {
