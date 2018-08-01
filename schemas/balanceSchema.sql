@@ -5,8 +5,8 @@ USE allowance;
 
 CREATE TABLE budget (
   
-  balace INTEGER(100) NULL,
-  balanceMonth INTEGER(100) NULL,
-  userId VARCHAR(100) NULL
- 
+  balance INTEGER(100) NULL,
+  balanceDate INTEGER(100) NULL REFERENCES BUDGETS.budgetDate,
+  userId VARCHAR(100) NULL REFERENCES USERS.userId
+  
 );
