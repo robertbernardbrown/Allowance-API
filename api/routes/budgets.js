@@ -5,7 +5,14 @@ const db = require("../models");
 router.get("/:userId", (req, res, next)=>{
     const id = req.params.userId;
     db.Budget
-    .findAll({where: {userId:id}})
+    .findAll({
+        where: {
+            userId:id
+        }, 
+        order: [
+            ["budgetDate", "ASC"]
+        ]
+    })
     .then(result => {
         if (result.length){
             res.status(200).json({
