@@ -112,6 +112,18 @@ router.put("/:userId/userName", (req, res, next)=>{
 
 //Delete user account
 router.delete("/:userId", (req, res, next)=>{
+    db.User
+    .destroy({where:{id:req.params.userId}})
+    .then(result => {
+        res.status(200).json({
+            message: "User deleted"
+        });
+    })
+    .catch(err=> {
+        res.status(500).json({
+            error:err
+        });
+    });
 });
 
 
