@@ -124,7 +124,6 @@ describe('API tests', () => {
             .post("/api/login")
             .send(loginInfo)
             .end((err, res) => {
-              console.log(res);
               token = res.body.token;
               res.should.have.status(200);
               res.body.should.be.a('object');
