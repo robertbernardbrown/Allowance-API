@@ -2,6 +2,8 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../models");
 const bcrypt  = require("bcryptjs");
+const jwt     = require("jsonwebtoken");
+require("dotenv").config();
 
 //Login a valid user
 router.post("/", (req, res, next)=>{
@@ -20,8 +22,17 @@ router.post("/", (req, res, next)=>{
                 });
             }
             if (data) {
+                const token = jwt.sign({
+                    email: result.dataValues.userEmail,
+                    userId: result.dataValues.id
+                }, 
+                process.env.JWT_KEY,
+                {
+                    expiresIn: "1h"
+                })
                 return res.status(200).json({
-                    message: "Auth successful"
+                    message: "Auth successful",
+                    token: token
                 });
             }
             res.status(400).json({
