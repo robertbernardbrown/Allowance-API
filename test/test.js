@@ -3,6 +3,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
 const should = chai.should();
+const LoginController = require("../api/controllers/login");
+let token;
 chai.use(chaiHttp);
 
 describe('API tests', () => {
@@ -22,13 +24,13 @@ describe('API tests', () => {
   describe('User model', () => {
 
     describe('GET user', () => {
-      it('it should GET a user based on their Id', (done) => {
+      it("it should fail to GET user info without successful auth", (done) => {
           chai.request(server)
               .get('/api/users/1')
               .end((err, res) => {
-                res.should.have.status(404);
+                res.should.have.status(400);
                 res.body.should.be.an('object');
-                res.body.message.should.include("We can\'t find your information!");
+                res.body.message.should.include("Auth failed");
                 done();
               });
       });
@@ -94,6 +96,45 @@ describe('API tests', () => {
           });
       });
     });
+
+    describe("POST login", () => {
+      it("it should fail to /login with invalid credentials", (done) => {
+      let loginInfo = {
+        userEmail: "test@test.com",
+        userPassword: "test"
+      }
+      chai.request(server)
+          .post("/api/login")
+          .send(loginInfo)
+          .end((err, res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Auth failed");
+            done();
+          })
+      })
+
+      it("it should succeed and login a user to /login with valid credentials", (done) => {
+        let loginInfo = {
+          userEmail: "billybob@gmail.com",
+          userPassword: "billybob123"
+        }
+        chai.request(server)
+            .post("/api/login")
+            .send(loginInfo)
+            .end((err, res) => {
+              console.log(res);
+              token = res.body.token;
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              res.body.message.should.include("Auth successful");
+              res.body.should.have.property('token');
+              done();
+            })
+        })
+    })
   });
 
   //========TEST SUITE TWO = Budget MODEL========
@@ -103,6 +144,7 @@ describe('API tests', () => {
       it('it should return an confirmation that no budgets exist if no budgets exist', (done) => {
         chai.request(server)
             .get('/api/budgets/1')
+            .set("Authorization", "Bearer " + token)
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.an('object');
@@ -122,6 +164,7 @@ describe('API tests', () => {
       chai.request(server)
         .post('/api/budgets/1')
         .send(budget)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(500);
           res.body.should.be.an('object');
@@ -144,6 +187,7 @@ describe('API tests', () => {
         chai.request(server)
           .post('/api/budgets/1')
           .send(budget)
+          .set("Authorization", "Bearer " + token)
           .end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.an('object');
@@ -175,6 +219,7 @@ describe('API tests', () => {
       chai.request(server)
         .put('/api/budgets/1')
         .send(budget)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.an('object');
@@ -193,6 +238,7 @@ describe('API tests', () => {
       chai.request(server)
         .put('/api/budgets/1')
         .send(budget)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.an('object');
@@ -215,6 +261,7 @@ describe('API tests', () => {
       chai.request(server)
         .delete('/api/budgets/1')
         .send(budget)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
@@ -232,6 +279,7 @@ describe('API tests', () => {
       chai.request(server)
         .delete('/api/budgets/1')
         .send(budget)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
@@ -270,6 +318,7 @@ describe('API tests', () => {
       it('it should return no transactions with accompanying message that there are no budgets', (done) => {
         chai.request(server)
             .get('/api/transactions/1')
+            .set("Authorization", "Bearer " + token)
             .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.an('object');
@@ -290,6 +339,7 @@ describe('API tests', () => {
       chai.request(server)
           .post('/api/transactions/1')
           .send(transaction)
+          .set("Authorization", "Bearer " + token)
           .end((err, res) => {
             res.should.have.status(500);
             res.body.should.be.an('object');
@@ -314,6 +364,7 @@ describe('API tests', () => {
       chai.request(server)
         .post('/api/transactions/1')
         .send(transaction)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.an('object');
@@ -342,6 +393,7 @@ describe('API tests', () => {
       it('it should return all existing transactions', (done) => {
         chai.request(server)
         .get('/api/transactions/1')
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
@@ -371,6 +423,7 @@ describe('API tests', () => {
       it('it should return transactions meeting a specific criteria', (done) => {
         chai.request(server)
         .get('/api/transactions/1/transactionType=subtract')
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
@@ -397,6 +450,7 @@ describe('API tests', () => {
       it('it should return message without transaction if search unsuccessful', (done) => {
         chai.request(server)
         .get('/api/transactions/1/transactionType=add')
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
@@ -422,6 +476,7 @@ describe('API tests', () => {
         chai.request(server)
         .put('/api/transactions/1')
         .send(newTransaction)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.an('object');
@@ -444,6 +499,7 @@ describe('API tests', () => {
         chai.request(server)
         .put('/api/transactions/1')
         .send(newTransaction)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
@@ -466,6 +522,7 @@ describe('API tests', () => {
         chai.request(server)
         .delete('/api/transactions/1')
         .send(delTransaction)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(404);
           res.body.should.be.an('object');
@@ -484,6 +541,7 @@ describe('API tests', () => {
         chai.request(server)
         .delete('/api/transactions/1')
         .send(delTransaction)
+        .set("Authorization", "Bearer " + token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
