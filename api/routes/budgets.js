@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../models");
+const checkAuth = require("../middleware/check-auth");
 
-router.get("/:userId", (req, res, next)=>{
+router.get("/:userId", checkAuth, (req, res, next)=>{
     const id = req.params.userId;
     db.Budget
     .findAll({
@@ -30,7 +31,7 @@ router.get("/:userId", (req, res, next)=>{
     })
 });
 
-router.post("/:userId", (req, res, next)=>{
+router.post("/:userId", checkAuth, (req, res, next)=>{
     const budget = {
         budget: req.body.budget,
         budgetDate: req.body.budgetDate,
@@ -46,7 +47,7 @@ router.post("/:userId", (req, res, next)=>{
     })
 });
 
-router.put("/:userId", (req, res, next)=>{
+router.put("/:userId", checkAuth, (req, res, next)=>{
     const newBudget = {
         budget: req.body.newBudget,
         budgetDate: req.body.budgetDate,
@@ -66,7 +67,7 @@ router.put("/:userId", (req, res, next)=>{
     })
 });
 
-router.delete("/:userId", (req, res, next)=>{
+router.delete("/:userId", checkAuth, (req, res, next)=>{
     const deleteBudget = {
         budgetDate: req.body.budgetDate,
         userId: req.params.userId

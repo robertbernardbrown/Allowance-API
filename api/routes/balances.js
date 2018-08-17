@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const checkAuth = require("../middleware/check-auth");
 
-router.get("/:userId", (req, res, next)=>{
+router.get("/:userId", checkAuth, (req, res, next)=>{
     const id = req.params.userId;
     if (id === "special") {
         res.status(200).json({
@@ -15,13 +16,13 @@ router.get("/:userId", (req, res, next)=>{
     }
 });
 
-router.put("/:userId", (req, res, next)=>{
+router.put("/:userId", checkAuth, (req, res, next)=>{
     res.status(200).json({
         message: "Updated balances!"
     })
 });
 
-router.delete("/:userId", (req, res, next)=>{
+router.delete("/:userId", checkAuth, (req, res, next)=>{
     res.status(200).json({
         message: "Deleted balances!"
     })

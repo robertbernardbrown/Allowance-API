@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../models");
 
 //Get current user information
-router.get("/:userId", (req, res, next)=>{
+router.get("/:userId", checkAuth, (req, res, next)=>{
     db.User.findOne({where: {id: req.params.userId}})
     .then(result=>{
         if (result) {
@@ -27,7 +27,7 @@ router.get("/:userId", (req, res, next)=>{
 });
 
 //Change user email with a check to see if email exists already
-router.put("/:userId/email", (req, res, next)=>{
+router.put("/:userId/email", checkAuth, (req, res, next)=>{
     const newEmail = req.body
     db.User
     .findOne({where: {userEmail:req.body.userEmail}})
@@ -56,7 +56,7 @@ router.put("/:userId/email", (req, res, next)=>{
 });
 
 //Change user password
-router.put("/:userId/password", (req, res, next)=>{
+router.put("/:userId/password", checkAuth, (req, res, next)=>{
     const passwordCheck = req.body.passwordCheck;
     db.User
     .findOne({where: {id:req.params.userId}})
@@ -91,7 +91,7 @@ router.put("/:userId/password", (req, res, next)=>{
 });
 
 //Change userName
-router.put("/:userId/userName", (req, res, next)=>{
+router.put("/:userId/userName", checkAuth, (req, res, next)=>{
     const newUsername = req.body
     db.User
     .update(newUsername, {where: {id:req.params.userId}})
@@ -111,7 +111,7 @@ router.put("/:userId/userName", (req, res, next)=>{
 
 
 //Delete user account
-router.delete("/:userId", (req, res, next)=>{
+router.delete("/:userId", checkAuth, (req, res, next)=>{
     db.User
     .destroy({where:{id:req.params.userId}})
     .then(result => {

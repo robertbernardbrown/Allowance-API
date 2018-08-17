@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 const querystring = require('querystring');
-var url = require('url');
+const url = require('url');
+const checkAuth = require("../middleware/check-auth");
 
 // GET all existing transactions for a user as default, can also specify transactions of certain type
-router.get("/:userId/:searchTerm?", (req, res, next)=>{
+router.get("/:userId/:searchTerm?", checkAuth, (req, res, next)=>{
     const id = req.params.userId;
     const searchTerm = req.params.searchTerm
     const parsedTerm = querystring.parse(searchTerm)
@@ -50,7 +51,7 @@ router.get("/:userId/:searchTerm?", (req, res, next)=>{
 });
 
 // PUT a transaction for a user
-router.put("/:userId", (req, res, next)=>{
+router.put("/:userId", checkAuth, (req, res, next)=>{
     const newTransaction = {
         id: req.body.id,
         transactionType: req.body.transactionType,
@@ -84,7 +85,7 @@ router.put("/:userId", (req, res, next)=>{
 });
 
 // POST a transaction for a user
-router.post("/:userId", (req, res, next)=>{
+router.post("/:userId", checkAuth, (req, res, next)=>{
     const transaction = {
         transactionType: req.body.transactionType,
         transactionAmount: req.body.transactionAmount,
@@ -103,7 +104,7 @@ router.post("/:userId", (req, res, next)=>{
 });
 
 //delete a transaction for a user
-router.delete("/:userId", (req, res, next)=>{
+router.delete("/:userId", checkAuth, (req, res, next)=>{
     db.Transaction
     .destroy({where:{id:req.body.id}})
     .then(result => {
