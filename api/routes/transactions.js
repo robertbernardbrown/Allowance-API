@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const checkAuth = require("../middleware/check-auth");
 const TransactionController = require("../controllers/transactions");
 
 // GET all existing transactions for a user as default, can also specify transactions of certain type

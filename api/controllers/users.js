@@ -1,5 +1,4 @@
 const db = require("../models");
-const checkAuth = require("../middleware/check-auth");
 
 exports.users_get = (req, res, next)=>{
     db.User.findOne({where: {id: req.params.userId}})
