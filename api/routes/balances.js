@@ -1,32 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const checkAuth = require("../middleware/check-auth");
+const BalancesController = require("../controllers/balances");
 
-router.get("/:userId", checkAuth, (req, res, next)=>{
-    const id = req.params.userId;
-    if (id === "special") {
-        res.status(200).json({
-            message: "Secret code!",
-            id: id
-        })
-    } else { 
-        res.status(200).json({
-            message: "You passed an ID"
-        })
-    }
-});
-
-router.put("/:userId", checkAuth, (req, res, next)=>{
-    res.status(200).json({
-        message: "Updated balances!"
-    })
-});
-
-router.delete("/:userId", checkAuth, (req, res, next)=>{
-    res.status(200).json({
-        message: "Deleted balances!"
-    })
-});
-
+router.get("/:userId", checkAuth, BalancesController.balances_get);
+router.put("/:userId", checkAuth, BalancesController.balances_update);
+router.delete("/:userId", checkAuth, BalancesController.balances_delete);
 
 module.exports = router;
