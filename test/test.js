@@ -22,13 +22,13 @@ describe('API tests', () => {
   describe('User model', () => {
 
     describe('GET user', () => {
-      it('it should GET a user based on their Id', (done) => {
+      it("it should fail to GET user info without successful auth", (done) => {
           chai.request(server)
               .get('/api/users/1')
               .end((err, res) => {
-                res.should.have.status(404);
+                res.should.have.status(400);
                 res.body.should.be.an('object');
-                res.body.message.should.include("We can\'t find your information!");
+                res.body.message.should.include("Auth failed");
                 done();
               });
       });
@@ -94,6 +94,43 @@ describe('API tests', () => {
           });
       });
     });
+
+    describe("POST login", () => {
+      it("it should fail to /login with invalid credentials", (done) => {
+      let loginInfo = {
+        userEmail: "test@test.com",
+        userPassword: "test"
+      }
+      chai.request(server)
+          .post("/api/login")
+          .send(loginInfo)
+          .end((err, res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message');
+            res.body.message.should.include("Auth failed");
+            done();
+          })
+      })
+
+      it("it should succeed and login a user to /login with valid credentials", (done) => {
+        let loginInfo = {
+          userEmail: "billybob@gmail.com",
+          userPassword: "billybob123"
+        }
+        chai.request(server)
+            .post("/api/login")
+            .send(loginInfo)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              res.body.message.should.include("Auth successful");
+              res.body.should.have.property('token');
+              done();
+            })
+        })
+    })
   });
 
   //========TEST SUITE TWO = Budget MODEL========

@@ -9,7 +9,6 @@ require("dotenv").config();
 router.post("/", (req, res, next)=>{
     db.User.findOne({ where: {userEmail: req.body.userEmail} })
     .then(result=>{
-        console.log(result);
         if (!result) {
             return res.status(400).json({
                 message: "Auth failed"

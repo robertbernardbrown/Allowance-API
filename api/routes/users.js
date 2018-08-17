@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../models");
+const checkAuth = require("../middleware/check-auth");
 
 //Get current user information
 router.get("/:userId", checkAuth, (req, res, next)=>{
