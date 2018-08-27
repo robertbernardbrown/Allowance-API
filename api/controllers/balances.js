@@ -1,17 +1,17 @@
 const db = require("../models");
 
 exports.balances_get = (req, res, next)=>{
-    const id = req.params.userId;
-    if (id === "special") {
+    db.Budget.findAll({
+        include: [
+            { model: db.Transaction}
+        ]
+    }).then(function(transactions) {
+        console.log(transactions.Budgets);
         res.status(200).json({
-            message: "Secret code!",
-            id: id
+            message: "Here are your transactions:",
+            transactions: transactions
         })
-    } else { 
-        res.status(200).json({
-            message: "You passed an ID"
-        })
-    }
+    }).catch(err=>{console.log(err)})
 }
 
 exports.balances_update = (req, res, next)=>{
