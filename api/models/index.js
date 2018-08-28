@@ -36,8 +36,8 @@ db.Sequelize = Sequelize;
 db.User.hasMany(db.Budget, {foreignKey: 'userId'});
 db.Budget.belongsTo(db.User, {foreignKey: 'userId'});
 
-db.Budget.hasMany(db.Transaction, {foreignKey: 'transactionDate'});
-db.Transaction.belongsTo(db.Budget, {foreignKey: 'transactionDate'});
+db.Budget.hasMany(db.Transaction, {foreignKey: 'userId'});
+db.Transaction.belongsTo(db.Budget, {foreignKey: 'userId'});
 
 db.User.hasMany(db.Transaction, {foreignKey: 'id'});
 db.Transaction.belongsTo(db.User, {foreignKey: 'id'});
