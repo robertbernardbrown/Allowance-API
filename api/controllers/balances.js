@@ -7,7 +7,7 @@ exports.balances_get = (req, res, next)=>{
     let endDate = req.params.endDate;
     db.Budget.findAll({
         include: [
-            { model: db.Transaction}
+            { model: db.Transaction }
         ],
         where: {
             budgetDate: {
@@ -16,11 +16,18 @@ exports.balances_get = (req, res, next)=>{
             }
         }
     }).then(function(transactions) {
-        console.log(transactions.Budgets);
-        res.status(200).json({
-            message: "Here are your transactions:",
-            transactions: transactions
-        })
+        if (transactions.length >= 1) {
+            console.log(transactions.Budgets);
+            res.status(200).json({
+                message: "Here are your transactions:",
+                transactions: transactions
+            })
+        }
+        else {
+            res.status(200).json({
+                message: "You don't have any transactions or budgets for this time period",
+            })
+        }
     }).catch(err=>{console.log(err)})
 }
 
