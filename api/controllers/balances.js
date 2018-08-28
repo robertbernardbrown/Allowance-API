@@ -3,18 +3,16 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op
 
 exports.balances_get = (req, res, next)=>{
-    let startDate = new Date("2017");
-    // let endDate = new Date("2017-12-01");
-    console.log(startDate);
-    // console.log(endDate);
+    let startDate = req.params.startDate;
+    let endDate = req.params.endDate;
     db.Budget.findAll({
         include: [
             { model: db.Transaction}
         ],
         where: {
             budgetDate: {
-                [Op.gt]: '2017-01-01',
-                [Op.lt]: '2018-01-01',
+                [Op.gt]: startDate,
+                [Op.lt]: endDate,
             }
         }
     }).then(function(transactions) {
