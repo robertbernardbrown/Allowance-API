@@ -23,6 +23,7 @@ module.exports = function(sequelize, DataTypes) {
         validate: {
             isDate: true,
         },
+        foreignKey: true,
         references: {
           model: "Budgets",
           key: 'budgetDate',
@@ -30,12 +31,12 @@ module.exports = function(sequelize, DataTypes) {
       },
       userId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         foreignKey: true,
         references: {
           model: "Users",
           key: 'id',
         },
-        allowNull: false
       }
       
     });

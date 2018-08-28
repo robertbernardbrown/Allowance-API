@@ -6,21 +6,45 @@ exports.balances_get = (req, res, next)=>{
     let startDate = req.params.startDate;
     let endDate = req.params.endDate;
     db.Budget.findAll({
-        include: [
-            { model: db.Transaction }
-        ],
+        include: [{ 
+            model: db.Transaction,
+            where: {
+                transactionDate: {
+                    [Op.gt]: startDate,
+                    [Op.lt]: endDate,
+                }
+            },
+            required: false
+        }],
         where: {
             budgetDate: {
                 [Op.gt]: startDate,
                 [Op.lt]: endDate,
             }
         }
-    }).then(function(transactions) {
-        if (transactions.length >= 1) {
-            console.log(transactions.Budgets);
+    }).then(function(data) {
+        if (data.length >= 1) {
+            // res.status(200).json({
+            //     message: "Here are your transactions:",
+            //     transactions: data
+            // })
+            let reducedArr = [];
+            data.map((cur, i) => {
+                let budget = cur.budget;
+                cur.Transactions.map((innerCur, i) => {
+                    if (innerCur.transactionType === "Add") {
+                        budget = budget + innerCur.transactionAmount;
+                    }
+                    else if (innerCur.transactionType === "Subtract") {
+                        budget = budget - innerCur.transactionAmount;
+                    }
+                })
+                let reducedBudgetItem = {[cur.budgetDate]: budget}
+                reducedArr.push(reducedBudgetItem)
+            })
             res.status(200).json({
                 message: "Here are your transactions:",
-                transactions: transactions
+                transactions: reducedArr
             })
         }
         else {
