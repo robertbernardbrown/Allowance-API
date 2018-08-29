@@ -35,7 +35,7 @@ exports.balances_get = (req, res, next)=>{
                         budget = budget - innerCur.transactionAmount;
                     }
                 })
-                let reducedBudgetItem = {[cur.budgetDate]: budget}
+                let reducedBudgetItem = {budget: budget, budgetDate: cur.budgetDate}
                 reducedArr.push(reducedBudgetItem)
             })
             res.status(200).json({
