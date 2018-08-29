@@ -554,15 +554,61 @@ describe('API tests', () => {
     });
   });
 
-  //========TEST SUITE FOUR = Balances MODEL========
-  // describe('Balance model', () => {
-  //   describe('GET balance', () => {
+  // ========TEST SUITE FOUR = Balances MODEL========
+  describe('Balance model', () => {
+    describe('GET balance', () => {
 
-  //     it('it should fail at GETting a balance with incomplete information', (done) => {
-        
-  //       });
-  //     });
-  //   });
+      it('it should fail at GETting a balance without a user', (done) => {
+        chai.request(server)
+        .get('/api/balances')
+        .set("Authorization", "Bearer " + token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.be.an('object');
+          res.body.should.have.property('error');
+          res.body.error.should.have.property('message');
+          res.body.error.message.should.include("Not found");
+          done();
+        });
+      });
+
+      it('it should fail at GETting a balance without date parameters and provide a message', (done) => {
+        chai.request(server)
+        .get('/api/balances/1')
+        .set("Authorization", "Bearer " + token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.message.should.include("You don't have any transactions or budgets for this time period");
+          done();
+        });
+      });
+
+      it('it should succeed at GETting a balance with a user and date search', (done) => {
+        chai.request(server)
+        .get('/api/balances/1/2018-01-01/2018-12-01')
+        .set("Authorization", "Bearer " + token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.an('object');
+          res.body.should.have.property('message');
+          res.body.should.have.property('transactions');
+          res.body.message.should.include('Here are your transactions:');
+          res.body.transactions.should.be.an("array");
+          res.body.transactions[0].should.be.an("object");
+          res.body.transactions[0].should.have.property("budget");
+          res.body.transactions[0].budget.should.equal(200);
+          res.body.transactions[0].budget.should.be.a("number");
+          res.body.transactions[0].should.have.property("budgetDate");
+          res.body.transactions[0].budgetDate.should.include("2018-02-01");
+          res.body.transactions[0].budgetDate.should.be.a("string");
+          done();
+        });
+      });
+
+      });
+    });
 
 
   //after hook to drop tables after run

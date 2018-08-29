@@ -41,10 +41,10 @@ exports.balances_get = (req, res, next)=>{
             data.map((cur) => {
                 let budget = cur.budget;
                 cur.Transactions.map((innerCur) => {
-                    if (innerCur.transactionType === "Add") {
+                    if (innerCur.transactionType === "add") {
                         budget = budget + innerCur.transactionAmount;
                     }
-                    else if (innerCur.transactionType === "Subtract") {
+                    else if (innerCur.transactionType === "subtract") {
                         budget = budget - innerCur.transactionAmount;
                     }
                 })
