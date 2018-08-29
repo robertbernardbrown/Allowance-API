@@ -24,14 +24,10 @@ exports.balances_get = (req, res, next)=>{
         }
     }).then(function(data) {
         if (data.length >= 1) {
-            // res.status(200).json({
-            //     message: "Here are your transactions:",
-            //     transactions: data
-            // })
             let reducedArr = [];
-            data.map((cur, i) => {
+            data.map((cur) => {
                 let budget = cur.budget;
-                cur.Transactions.map((innerCur, i) => {
+                cur.Transactions.map((innerCur) => {
                     if (innerCur.transactionType === "Add") {
                         budget = budget + innerCur.transactionAmount;
                     }
@@ -52,7 +48,12 @@ exports.balances_get = (req, res, next)=>{
                 message: "You don't have any transactions or budgets for this time period",
             })
         }
-    }).catch(err=>{console.log(err)})
+    }).catch(err=>{
+        res.status(500).json({
+            message: "There was an error fetching this data",
+            err: err
+        })
+    })
 }
 
 exports.balances_update = (req, res, next)=>{
