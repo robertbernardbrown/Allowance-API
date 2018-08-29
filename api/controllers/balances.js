@@ -2,6 +2,25 @@ const db = require("../models");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op
 
+/**
+ * Helps balances_get to return correct dates in query search
+ * @param {date} start - date to start search from
+ * @param {date} end - date to end search
+ */
+function getHelper(start, end){
+    if (start && end) {
+        return {
+            [Op.gt]: start,
+            [Op.lt]: end,
+        }
+    }
+    else if (start){
+        return {
+            [Op.gt]: start,
+        }
+    }
+}
+
 exports.balances_get = (req, res, next)=>{
     let startDate = req.params.startDate;
     let endDate = req.params.endDate;
@@ -9,18 +28,12 @@ exports.balances_get = (req, res, next)=>{
         include: [{ 
             model: db.Transaction,
             where: {
-                transactionDate: {
-                    [Op.gt]: startDate,
-                    [Op.lt]: endDate,
-                }
+                transactionDate: getHelper(startDate, endDate)
             },
             required: false
         }],
         where: {
-            budgetDate: {
-                [Op.gt]: startDate,
-                [Op.lt]: endDate,
-            }
+            budgetDate: getHelper(startDate, endDate)
         }
     }).then(function(data) {
         if (data.length >= 1) {
