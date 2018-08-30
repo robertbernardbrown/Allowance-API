@@ -22,9 +22,9 @@ function getHelper(start, end){
 }
 
 exports.balances_get = (req, res, next)=>{
-    const startDate = req.params.startDate;
-    const endDate = req.params.endDate;
-    const id = req.params.userId;
+    let startDate = req.params.startDate;
+    let endDate = req.params.endDate;
+    let id = req.params.userId;
     db.Budget.findAll({
         include: [{ 
             model: db.Transaction,
@@ -37,7 +37,10 @@ exports.balances_get = (req, res, next)=>{
         where: {
             budgetDate: getHelper(startDate, endDate),
             userId:id
-        }
+        },
+        order: [
+            ["budgetDate", "ASC"]
+        ]
     }).then(function(data) {
         if (data.length >= 1) {
             let reducedArr = [];
