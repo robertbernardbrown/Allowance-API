@@ -10,13 +10,13 @@ const Op = Sequelize.Op
 function getHelper(start, end){
     if (start && end) {
         return {
-            [Op.gt]: start,
-            [Op.lt]: end,
+            [Op.gte]: start,
+            [Op.lte]: end,
         }
     }
     else if (start){
         return {
-            [Op.gt]: start,
+            [Op.gte]: start,
         }
     }
 }
