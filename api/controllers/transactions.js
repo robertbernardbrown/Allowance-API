@@ -47,11 +47,10 @@ exports.transactions_get = (req, res, next)=>{
 
 exports.transactions_update = (req, res, next)=>{
     const newTransaction = {
-        id: req.body.id,
+        id: req.params.userId,
         transactionType: req.body.transactionType,
         transactionAmount: req.body.transactionAmount,
         transactionReceipt: req.body.transactionReceipt,
-        transactionDate: req.body.transactionDate,
         UserId: req.params.userId,
         BudgetId: req.body.budgetId
     }
@@ -84,7 +83,6 @@ exports.transactions_post = (req, res, next)=>{
         transactionType: req.body.transactionType,
         transactionAmount: req.body.transactionAmount,
         transactionReceipt: req.body.transactionReceipt,
-        transactionDate: req.body.transactionDate,
         UserId: req.params.userId,
         BudgetId: req.body.budgetId
     }
