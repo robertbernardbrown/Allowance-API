@@ -17,29 +17,21 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      transactionDate: {
-        type: DataTypes.DATEONLY,
-        allowNull: false,
-        validate: {
-            isDate: true,
-        },
-        foreignKey: true,
-        references: {
-          model: "Budgets",
-          key: 'budgetDate',
-        },
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        foreignKey: true,
-        references: {
-          model: "Users",
-          key: 'id',
-        },
-      }
-      
     });
+
+    Transaction.associate = function(models) {
+      Transaction.belongsTo(models.User, {
+        foreignKey: {
+          allowNull: false,
+        }
+      })
+
+      Transaction.belongsTo(models.Budget, {
+        foreignKey: {
+          allowNull: false,
+        }
+      })
+    }
     
     return Transaction;
 };

@@ -33,14 +33,4 @@ Object.keys(db).forEach(function(modelName) {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// db.User.hasMany(db.Budget, {foreignKey: 'userId'});
-// db.Budget.belongsTo(db.User, {foreignKey: 'userId'});
-
-db.Budget.hasMany(db.Transaction, {foreignKey: 'transactionDate', sourceKey: 'budgetDate'});
-// db.Transaction.belongsTo(db.Budget, {foreignKey: 'id'});
-
-// db.User.hasMany(db.Transaction, {foreignKey: 'id'});
-// db.Transaction.belongsTo(db.User, {foreignKey: 'id'});
-
-
 module.exports = db;

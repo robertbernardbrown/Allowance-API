@@ -1,7 +1,5 @@
 const db = require("../models");
 const querystring = require('querystring');
-const url = require('url');
-const checkAuth = require("../middleware/check-auth");
 
 exports.transactions_get = (req, res, next)=>{
     const id = req.params.userId;
@@ -9,7 +7,7 @@ exports.transactions_get = (req, res, next)=>{
     const parsedTerm = querystring.parse(searchTerm)
     if (searchTerm){
         db.Transaction
-        .findAll({where: [{userId:id}, parsedTerm]})
+        .findAll({where: [{UserId:id}, parsedTerm]})
         .then(result => {
             if (result.length){
                 res.status(200).json({
@@ -28,7 +26,7 @@ exports.transactions_get = (req, res, next)=>{
         })
     } else {
         db.Transaction
-        .findAll({where: {userId:id}})
+        .findAll({where: {UserId:id}})
         .then(result => {
             if (result.length){
                 res.status(200).json({
@@ -54,7 +52,8 @@ exports.transactions_update = (req, res, next)=>{
         transactionAmount: req.body.transactionAmount,
         transactionReceipt: req.body.transactionReceipt,
         transactionDate: req.body.transactionDate,
-        userId: req.params.userId
+        UserId: req.params.userId,
+        BudgetId: req.body.budgetId
     }
     db.Transaction
     .update(newTransaction, {where:{id:newTransaction.id}})
@@ -86,7 +85,8 @@ exports.transactions_post = (req, res, next)=>{
         transactionAmount: req.body.transactionAmount,
         transactionReceipt: req.body.transactionReceipt,
         transactionDate: req.body.transactionDate,
-        userId: req.params.userId
+        UserId: req.params.userId,
+        BudgetId: req.body.budgetId
     }
     db.Transaction
     .create(transaction)

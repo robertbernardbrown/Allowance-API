@@ -17,18 +17,17 @@ module.exports = function(sequelize, DataTypes) {
         validate: {
             isDate: true,
         }
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        foreignKey: true,
-        references: {
-          model: "Users",
-          key: 'id',
-        },
-        allowNull: false
       }
-      
     });
+
+    Budget.associate = function(models) {
+      Budget.belongsTo(models.User, {
+        foreignKey: {
+          allowNull: false,
+          unique: 'byUser'
+        }
+      });
+    };
     
     return Budget;
 };
