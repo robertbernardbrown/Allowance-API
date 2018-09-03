@@ -31,7 +31,7 @@ exports.balances_get = (req, res, next)=>{
             where: {
                 transactionDate: getHelper(startDate, endDate),
                 userId:id
-            },
+            }, 
             required: false
         }],
         where: {
