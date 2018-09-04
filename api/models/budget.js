@@ -30,8 +30,7 @@ module.exports = function(sequelize, DataTypes) {
 
       Budget.hasMany(models.Transaction, {
         foreignKey: {
-          allowNull: false,
-          unique: 'byUser'
+          allowNull: false
         }
       })
     };
