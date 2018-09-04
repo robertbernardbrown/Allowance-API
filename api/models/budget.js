@@ -13,7 +13,6 @@ module.exports = function(sequelize, DataTypes) {
       budgetDate: {
         type: DataTypes.DATEONLY,
         unique: 'byUser',
-        unique: true,
         allowNull: false,
         validate: {
             isDate: true,
@@ -25,8 +24,16 @@ module.exports = function(sequelize, DataTypes) {
       Budget.belongsTo(models.User, {
         foreignKey: {
           allowNull: false,
+          unique: 'byUser'
         }
       });
+
+      Budget.hasMany(models.Transaction, {
+        foreignKey: {
+          allowNull: false,
+          unique: 'byUser'
+        }
+      })
     };
     
     return Budget;

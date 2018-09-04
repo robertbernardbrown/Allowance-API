@@ -23,14 +23,16 @@ module.exports = function(sequelize, DataTypes) {
       Transaction.belongsTo(models.User, {
         foreignKey: {
           allowNull: false,
+          unique: 'byUser'
         }
-      })
+      });
 
       Transaction.belongsTo(models.Budget, {
         foreignKey: {
           allowNull: false,
+          unique: 'byUser'
         }
-      })
+      });
     }
     
     return Transaction;
