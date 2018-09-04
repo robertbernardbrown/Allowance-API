@@ -197,12 +197,12 @@ describe('API tests', () => {
             res.body.budget.should.have.property('id');
             res.body.budget.should.have.property('budget');
             res.body.budget.should.have.property('budgetDate');
-            res.body.budget.should.have.property('userId');
+            res.body.budget.should.have.property('UserId');
             res.body.budget.budget.should.be.a("number");
             res.body.budget.budgetDate.should.be.a('string');
             res.body.budget.budgetDate.should.include('2018-02-01');
             res.body.budget.id.should.be.a('number');
-            res.body.budget.userId.should.be.a('string');
+            res.body.budget.UserId.should.be.a('string');
             done();
           });
         });
@@ -301,14 +301,14 @@ describe('API tests', () => {
       const budget = {
         budget: 200,
         budgetDate: new Date(2018, 1),
-        userId: 1
+        UserId: 1
       }
       db.Budget
       .create(budget)
         .then((result) => {
           done();
         })
-        .catch(() => {
+        .catch((err) => {
           done();
         });
     });
@@ -358,7 +358,7 @@ describe('API tests', () => {
         transactionType: "subtract",
         transactionAmount: 50,
         transactionReceipt: "groceries",
-        transactionDate: new Date(2018, 1)
+        budgetId: 2
       }
       chai.request(server)
         .post('/api/transactions/1')
@@ -379,10 +379,10 @@ describe('API tests', () => {
           res.body.budget.transactionAmount.should.equal(50);
           res.body.budget.should.have.property("transactionReceipt");
           res.body.budget.transactionReceipt.should.include("groceries");
-          res.body.budget.should.have.property("transactionDate");
-          res.body.budget.transactionDate.should.equal("2018-02-01");
-          res.body.budget.should.have.property("userId");
-          res.body.budget.userId.should.include("1");
+          res.body.budget.should.have.property("UserId");
+          res.body.budget.UserId.should.include("1");
+          res.body.budget.should.have.property("BudgetId");
+          res.body.budget.BudgetId.should.equal(2);
           done();
         });
       });
@@ -408,10 +408,10 @@ describe('API tests', () => {
           res.body.result[0].transactionAmount.should.equal(50);
           res.body.result[0].should.have.property("transactionReceipt");
           res.body.result[0].transactionReceipt.should.include("groceries");
-          res.body.result[0].should.have.property("transactionDate");
-          res.body.result[0].transactionDate.should.equal("2018-02-01");
-          res.body.result[0].should.have.property("userId");
-          res.body.result[0].userId.should.equal(1);
+          res.body.result[0].should.have.property("UserId");
+          res.body.result[0].UserId.should.equal(1);
+          res.body.result[0].should.have.property("BudgetId");
+          res.body.result[0].BudgetId.should.equal(2);
           done();
         });
       });
@@ -438,10 +438,10 @@ describe('API tests', () => {
           res.body.result[0].transactionAmount.should.equal(50);
           res.body.result[0].should.have.property("transactionReceipt");
           res.body.result[0].transactionReceipt.should.include("groceries");
-          res.body.result[0].should.have.property("transactionDate");
-          res.body.result[0].transactionDate.should.equal("2018-02-01");
-          res.body.result[0].should.have.property("userId");
-          res.body.result[0].userId.should.equal(1);
+          res.body.result[0].should.have.property("UserId");
+          res.body.result[0].UserId.should.equal(1);
+          res.body.result[0].should.have.property("BudgetId");
+          res.body.result[0].BudgetId.should.equal(2);
           done();
         });
       });
@@ -470,18 +470,17 @@ describe('API tests', () => {
           transactionType: "subtract",
           transactionAmount: 50,
           transactionReceipt: "groceries",
-          transactionDate: new Date(2018, 1)
         }
         chai.request(server)
         .put('/api/transactions/1')
         .send(newTransaction)
         .set("Authorization", "Bearer " + token)
         .end((err, res) => {
-          res.should.have.status(400);
+          res.should.have.status(500);
           res.body.should.be.an('object');
           res.body.should.have.property('message');
-          res.body.message.should.include("We couldn\'t find a transaction to update there");
-          res.body.should.have.property('result');
+          res.body.message.should.include("There was an internal error processing that transaction!");
+          res.body.should.have.property('error');
           done();
         });
       });
@@ -492,8 +491,8 @@ describe('API tests', () => {
           transactionType: "add",
           transactionAmount: 50,
           transactionReceipt: "groceries",
-          transactionDate: new Date(2018, 1),
-          userId: 1
+          userId: 1,
+          budgetId: 2
         }
         chai.request(server)
         .put('/api/transactions/1')

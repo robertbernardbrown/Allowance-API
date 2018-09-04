@@ -5,7 +5,7 @@ exports.budgets_get = (req, res, next)=>{
     db.Budget
     .findAll({
         where: {
-            userId:id
+            UserId:id
         }, 
         order: [
             ["budgetDate", "ASC"]
@@ -32,7 +32,7 @@ exports.budgets_create = (req, res, next)=>{
     const budget = {
         budget: req.body.budget,
         budgetDate: req.body.budgetDate,
-        userId: req.params.userId
+        UserId: req.params.userId
     }
     db.Budget
     .create(budget)
@@ -46,12 +46,12 @@ exports.budgets_create = (req, res, next)=>{
 
 exports.budgets_update = (req, res, next)=>{
     const newBudget = {
-        budget: req.body.newBudget,
+        budget: req.body.budget,
         budgetDate: req.body.budgetDate,
-        userId: req.params.userId
+        UserId: req.params.userId
     }
     db.Budget
-    .update(newBudget, {where:{userId:req.params.userId, budgetDate:newBudget.budgetDate}})
+    .update(newBudget, {where:{UserId:req.params.userId, budgetDate:newBudget.budgetDate}})
     .then(result => {
         if (result[0]>0){
             res.status(201).json({message: "Updated budget!", budget: result})

@@ -12,23 +12,28 @@ module.exports = function(sequelize, DataTypes) {
       },
       budgetDate: {
         type: DataTypes.DATEONLY,
-        unique: true,
+        unique: 'byUser',
         allowNull: false,
         validate: {
             isDate: true,
         }
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        foreignKey: true,
-        references: {
-          model: "Users",
-          key: 'id',
-        },
-        allowNull: false
       }
-      
     });
+
+    Budget.associate = function(models) {
+      Budget.belongsTo(models.User, {
+        foreignKey: {
+          allowNull: false,
+          unique: 'byUser'
+        }
+      });
+
+      Budget.hasMany(models.Transaction, {
+        foreignKey: {
+          allowNull: false
+        }
+      })
+    };
     
     return Budget;
 };

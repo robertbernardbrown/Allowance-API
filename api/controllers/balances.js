@@ -29,14 +29,13 @@ exports.balances_get = (req, res, next)=>{
         include: [{ 
             model: db.Transaction,
             where: {
-                transactionDate: getHelper(startDate, endDate),
-                userId:id
-            },
+                UserId:id
+            }, 
             required: false
         }],
         where: {
             budgetDate: getHelper(startDate, endDate),
-            userId:id
+            UserId:id
         },
         order: [
             ["budgetDate", "ASC"]
