@@ -64,16 +64,15 @@ describe('API tests', () => {
           .post('/api/register')
           .send(userInfo)
           .end((err, res) => {
-            res.should.have.status(500);
+            res.should.have.status(400);
             res.body.should.be.a('object');
+            res.body.should.have.property('success');
+            res.body.success.should.equal(false);
             res.body.should.have.property('message');
-            res.body.should.have.property('error');
-            res.body.message.should.include("There was an error processing your information");
-            res.body.error.should.have.property("name");
-            res.body.error.name.should.include("SequelizeValidationError");
-            res.body.error.should.have.property("errors");
-            res.body.error.errors.should.have.an("array");
-            res.body.error.errors[0].message.should.include("User.userName cannot be null");
+            res.body.message.should.include('Check the form for errors.');
+            res.body.should.have.property('errors');
+            res.body.errors.should.be.a('object');
+            res.body.errors.userName.should.include('Please provide your name.');
             done();
           });
       });
